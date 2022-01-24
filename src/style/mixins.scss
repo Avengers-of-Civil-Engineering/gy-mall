@@ -1,5 +1,13 @@
+// 文字单行显示，溢出部分...
 @mixin ellipsis {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+// 去除原始 input 框格式
+@mixin formatInput {
+  border: none;
+  outline: none;
+  background: none;
 }

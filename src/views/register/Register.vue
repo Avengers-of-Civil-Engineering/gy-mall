@@ -108,6 +108,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/style/variables.scss";
+@import "@/style/mixins.scss";
 
 .wrapper {
   position: absolute;
@@ -129,9 +130,7 @@ export default {
     border: 0.01rem solid rgba(0, 0, 0, 0.1);
     border-radius: 6px;
     &__content {
-      border: none;
-      outline: none;
-      background: none;
+      @include formatInput;
       margin-top: 0.12rem;
       line-height: 0.24rem;
       width: 100%;
