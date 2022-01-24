@@ -19,15 +19,18 @@
     <div class="wrapper__register-link"
          @click="handleToRegister">没有账号，立即注册</div>
   </div>
+  <Toast v-if="show"
+         :message="toastMessage" />
 </template>
 
 <script>
 import { useRouter } from 'vue-router'
 import { post } from '@/utils/request.js'
 import { reactive, toRefs } from 'vue'
+import Toast, { useToastEffect } from '@/components/Toast.vue'
 
 // 处理登陆逻辑
-const useLoginEffect = () => {
+const useLoginEffect = (showToast) => {
   const router = useRouter()
   const data = reactive({
     username: '',
@@ -46,13 +49,13 @@ const useLoginEffect = () => {
           localStorage.isLogin = true
           router.push({ name: 'Home' })
         } else {
-          console.log('登陆失败')
+          showToast('登陆失败')
         }
       } catch (e) {
-        console.log('请求失败')
+        showToast('请求失败')
       }
     } else {
-      console.log('账号密码不能为空')
+      showToast('账号密码不能为空')
     }
   }
   const { username, password } = toRefs(data)
@@ -71,14 +74,21 @@ const useToRegisterEffect = () => {
 
 export default {
   name: 'Login',
+  components: {
+    Toast
+  },
   setup () {
-    const { username, password, handleLogin } = useLoginEffect()
+    const { show, toastMessage, showToast } = useToastEffect()
+    const { username, password, handleLogin } = useLoginEffect(showToast)
     const { handleToRegister } = useToRegisterEffect()
+
     return {
       username,
       password,
       handleLogin,
-      handleToRegister
+      handleToRegister,
+      show,
+      toastMessage
     }
   }
 }
