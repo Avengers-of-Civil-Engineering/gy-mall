@@ -13,6 +13,7 @@
                    :key="item._id"
                    :item="item"
                    :showSales="true"
+                   :isImgLarge="true"
                    :shopId="shopId"
                    :shopName="shopName" />
     </div>

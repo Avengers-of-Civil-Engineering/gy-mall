@@ -4,7 +4,7 @@
          v-if="showCheck"
          v-html="isChecked ? '&#xe656;' : '&#xe7ae;'"></div>
     <img :src="item.imgUrl"
-         class="product__img">
+         :class="{'product__img-l': isImgLarge, 'product__img-s': !isImgLarge}">
     <div class="product__details">
       <h4 class="product__title">{{item.name}}</h4>
       <p class="product__sales"
@@ -31,7 +31,7 @@ import { toRefs } from '@vue/reactivity'
 
 export default {
   name: 'ProductInfo',
-  props: ['shopId', 'shopName', 'item', 'showCheck', 'showSales', 'isChecked'],
+  props: ['shopId', 'shopName', 'item', 'isImgLarge', 'showCheck', 'showSales', 'isChecked'],
   setup (props) {
     const { shopId } = toRefs(props)
     const store = useStore()
@@ -67,16 +67,21 @@ export default {
     font-size: 0.2rem;
     color: $btn-bgColor;
   }
-  &__img {
+  &__img-l {
     width: 0.68rem;
     height: 0.68rem;
+    margin-right: 0.16rem;
+  }
+  &__img-s {
+    width: 0.46rem;
+    height: 0.46rem;
     margin-right: 0.16rem;
   }
   &__details {
     overflow: hidden;
   }
   &__title {
-    margin: 0;
+    margin: 0 0 0.06rem 0;
     line-height: 0.2rem;
     font-size: 0.14rem;
     font-weight: normal;
@@ -84,13 +89,13 @@ export default {
     @include ellipsis;
   }
   &__sales {
-    margin: 0.06rem 0;
+    margin: 0;
     line-height: 0.16rem;
     font-size: 0.12rem;
     color: $content-fontcolor;
   }
   &__price {
-    margin: 0;
+    margin: 0.06rem 0 0 0;
     line-height: 0.2rem;
     font-size: 0.14rem;
     color: $hightlight-fontColor;

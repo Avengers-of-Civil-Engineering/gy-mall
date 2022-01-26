@@ -1,3 +1,4 @@
+import { computed } from 'vue'
 import { useStore } from 'vuex'
 
 const useCommonCartEffect = (shopId) => {
@@ -10,7 +11,18 @@ const useCommonCartEffect = (shopId) => {
     const count = cartList?.[shopId]?.productList?.[productId]?.count || 0
     return count
   }
-  return { changeCartItemInfo, getProductCartCount }
+  const productList = computed(() => {
+    const productList = cartList?.[shopId]?.productList || {}
+    const noEmptyProductList = {}
+    for (const i in productList) {
+      const product = productList[i]
+      if (product.count > 0) {
+        noEmptyProductList[i] = product
+      }
+    }
+    return noEmptyProductList
+  })
+  return { changeCartItemInfo, getProductCartCount, productList }
 }
 
 export default useCommonCartEffect
