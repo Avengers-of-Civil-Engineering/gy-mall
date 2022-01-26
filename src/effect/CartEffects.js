@@ -40,7 +40,11 @@ const useCommonCartEffect = (shopId) => {
     result.totalPrice = result.totalPrice.toFixed(2)
     return result
   })
-  return { changeCartItemInfo, getProductCartCount, productList, calculations }
+  const shopName = computed(() => {
+    const shopName = cartList[shopId]?.shopName || ''
+    return shopName
+  })
+  return { shopName, changeCartItemInfo, getProductCartCount, productList, calculations }
 }
 
 export default useCommonCartEffect

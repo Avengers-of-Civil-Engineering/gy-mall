@@ -3,6 +3,7 @@ import Home from '@/views/home/Home.vue'
 import Login from '@/views/login/Login.vue'
 import Register from '@/views/register/Register.vue'
 import Shop from '@/views/shop/Shop.vue'
+import OrderConfirmation from '@/views/orderConfirmation/OrderConfirmation.vue'
 
 const routes = [
   {
@@ -14,6 +15,11 @@ const routes = [
     path: '/shop/:id',
     name: 'Shop',
     component: Shop
+  },
+  {
+    path: '/orderConfirmation/:id',
+    name: 'OrderConfirmation',
+    component: OrderConfirmation
   },
   {
     path: '/login',
