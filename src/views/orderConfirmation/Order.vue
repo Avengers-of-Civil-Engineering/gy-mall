@@ -3,22 +3,49 @@
     <div class="order__price">实付金额
       <b class="order__price__num">&yen;{{calculations.totalPrice}}</b>
     </div>
-    <div class="order__btn">提交订单</div>
+    <div class="order__btn"
+         @click="handleSubmit">提交订单</div>
   </div>
+  <Modal :showModal="showModal"
+         :modalData="modalData"
+         @cancel="handleCancel"
+         @ok="handleOk" />
 </template>
 
 <script>
+import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import useCommonCartEffect from '@/effect/CartEffects.js'
+import Modal from '@/components/Modal.vue'
+
+const modalData = {
+  title: '确认要离开收银台？',
+  desc: '请尽快完成支付，否则将被取消',
+  cancelText: '取消订单',
+  okText: '确认订单'
+}
 
 export default {
   name: 'Order',
+  components: { Modal },
   setup () {
+    const showModal = ref(false)
     const route = useRoute()
     const shopId = route.params.id
     const { calculations } = useCommonCartEffect(shopId)
+    const handleSubmit = () => {
+      showModal.value = true
+    }
+    const handleCancel = () => {
+      // console.log('cancel')
+      showModal.value = false
+    }
+    const handleOk = () => {
+      // console.log('ok')
+      showModal.value = false
+    }
 
-    return { calculations }
+    return { calculations, showModal, handleSubmit, modalData, handleCancel, handleOk }
   }
 }
 </script>
@@ -55,10 +82,7 @@ export default {
     font-size: 0.14rem;
     text-align: center;
     background: $btn-bgcolor;
-    a {
-      color: $bg-color;
-      text-decoration: none;
-    }
+    color: $bg-color;
   }
 }
 </style>
