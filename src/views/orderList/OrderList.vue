@@ -13,7 +13,8 @@
           <template v-for="(innerItem, innerIndex) in item.products"
                     :key="innerIndex">
             <img class="order__content__img"
-                 :src="innerItem.product.img">
+                 :src="innerItem.product.img"
+                 v-if="innerIndex <= 3">
           </template>
         </div>
         <div class="order__content__info">

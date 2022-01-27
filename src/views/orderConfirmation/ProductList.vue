@@ -46,9 +46,9 @@ export default {
 
 .product {
   position: absolute;
-  top: 2.12rem;
-  left: 0.18rem;
-  right: 0.18rem;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 3rem;
   padding: 0.16rem;
   background: $bg-color;

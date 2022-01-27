@@ -44,7 +44,7 @@ const useCommonCartEffect = (shopId) => {
     const shopName = cartList[shopId]?.shopName || ''
     return shopName
   })
-  return { shopName, changeCartItemInfo, getProductCartCount, productList, calculations }
+  return { cartList, shopName, changeCartItemInfo, getProductCartCount, productList, calculations }
 }
 
 export default useCommonCartEffect
