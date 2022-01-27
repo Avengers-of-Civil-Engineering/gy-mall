@@ -6,6 +6,7 @@ import Shop from '@/views/shop/Shop.vue'
 import OrderConfirmation from '@/views/orderConfirmation/OrderConfirmation.vue'
 import OrderList from '@/views/orderList/OrderList.vue'
 import CartList from '@/views/cartList/CartList.vue'
+import Mine from '@/views/mine/Mine.vue'
 
 const routes = [
   {
@@ -24,14 +25,19 @@ const routes = [
     component: OrderConfirmation
   },
   {
+    path: '/cartList',
+    name: 'CartList',
+    component: CartList
+  },
+  {
     path: '/orderList',
     name: 'OrderList',
     component: OrderList
   },
   {
-    path: '/cartList',
-    name: 'CartList',
-    component: CartList
+    path: '/mine',
+    name: 'Mine',
+    component: Mine
   },
   {
     path: '/login',
