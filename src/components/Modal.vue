@@ -1,6 +1,5 @@
 <template>
-  <div class="modal"
-       v-if="showModal">
+  <div class="modal">
     <div class="modal__content">
       <h3 class="modal__content__title">{{modalData.title}}</h3>
       <p class="modal__content__desc">{{modalData.desc}}</p>
@@ -17,7 +16,7 @@
 <script>
 export default {
   name: 'Modal',
-  props: ['showModal', 'modalData'],
+  props: ['modalData'],
   emits: ['cancel', 'ok'],
   setup (props, { emit }) {
     const cancel = () => {

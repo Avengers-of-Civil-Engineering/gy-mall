@@ -19,6 +19,7 @@ export const useToastEffect = () => {
   const showToast = (msg) => {
     toastData.show = true
     toastData.toastMessage = msg
+    console.log('toastMessage', msg)
     setTimeout(() => {
       toastData.show = false
       toastData.toastMessage = ''
@@ -34,6 +35,7 @@ export const useToastEffect = () => {
 
 .toast {
   position: fixed;
+  z-index: 10;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);

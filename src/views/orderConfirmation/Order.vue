@@ -6,17 +6,22 @@
     <div class="order__btn"
          @click="handleSubmit">提交订单</div>
   </div>
-  <Modal :showModal="showModal"
+  <Modal v-if="showModal"
          :modalData="modalData"
-         @cancel="handleCancel"
-         @ok="handleOk" />
+         @cancel="() => handleConfirmOrder(true)"
+         @ok="() => handleConfirmOrder(false)" />
+  <Toast v-if="show"
+         :message="toastMessage" />
 </template>
 
 <script>
 import { ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useStore } from 'vuex'
+import { useRoute, useRouter } from 'vue-router'
 import useCommonCartEffect from '@/effect/CartEffects.js'
+import { post } from '@/utils/request.js'
 import Modal from '@/components/Modal.vue'
+import Toast, { useToastEffect } from '@/components/Toast.vue'
 
 const modalData = {
   title: '确认要离开收银台？',
@@ -25,27 +30,53 @@ const modalData = {
   okText: '确认订单'
 }
 
+// 处理提交订单相关逻辑
+const useConfirmOrderEffect = (shopId, shopName, productList) => {
+  const store = useStore()
+  const router = useRouter()
+  const { show, toastMessage, showToast } = useToastEffect()
+  const handleConfirmOrder = async (isCanceled) => {
+    const products = []
+    for (const i in productList.value) {
+      const product = productList.value[i]
+      products.push({ id: parseInt(product._id, 10), num: product.count })
+    }
+    try {
+      const result = await post('/api/order', {
+        addressId: 1,
+        shopId,
+        shopName: shopName.value,
+        isCanceled,
+        products
+      })
+      console.log(result)
+      if (result?.errno === 0) {
+        store.commit('cleanCart', { shopId })
+        router.push({ name: 'OrderList' })
+      } else {
+        showToast('获取失败')
+      }
+    } catch (e) {
+      showToast('请求失败')
+    }
+  }
+  return { show, toastMessage, handleConfirmOrder }
+}
+
 export default {
   name: 'Order',
-  components: { Modal },
+  components: { Modal, Toast },
   setup () {
     const showModal = ref(false)
     const route = useRoute()
     const shopId = route.params.id
-    const { calculations } = useCommonCartEffect(shopId)
+    const { shopName, productList, calculations } = useCommonCartEffect(shopId)
+    const { show, toastMessage, handleConfirmOrder } = useConfirmOrderEffect(shopId, shopName, productList)
     const handleSubmit = () => {
       showModal.value = true
     }
-    const handleCancel = () => {
-      // console.log('cancel')
-      showModal.value = false
-    }
-    const handleOk = () => {
-      // console.log('ok')
-      showModal.value = false
-    }
 
-    return { calculations, showModal, handleSubmit, modalData, handleCancel, handleOk }
+    return { calculations, showModal, handleSubmit, modalData, show, toastMessage, handleConfirmOrder }
   }
 }
 </script>
