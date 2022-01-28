@@ -7,14 +7,27 @@
     </div>
     <div class="search">
       <span class="iconfont">&#xe6a0;</span>
-      <span class="search__text">山姆会员商店优惠商品</span>
+      <!-- <span class="search__text">山姆会员商店优惠商品</span> -->
+      <input type="text"
+             placeholder="山姆会员商店优惠商品"
+             class="search__text"
+             @click="handleSearch">
     </div>
   </div>
 </template>
 
 <script>
+import { useRouter } from 'vue-router'
+
 export default {
-  name: 'Position'
+  name: 'Position',
+  setup () {
+    const router = useRouter()
+    const handleSearch = () => {
+      router.push({ name: 'Search' })
+    }
+    return { handleSearch }
+  }
 }
 </script>
 
@@ -63,6 +76,7 @@ export default {
   &__text {
     display: inline-block;
     font-size: 0.14rem;
+    @include formatInput;
   }
 }
 </style>

@@ -7,12 +7,18 @@ import OrderConfirmation from '@/views/orderConfirmation/OrderConfirmation.vue'
 import OrderList from '@/views/orderList/OrderList.vue'
 import CartList from '@/views/cartList/CartList.vue'
 import Mine from '@/views/mine/Mine.vue'
+import Search from '@/views/search/Search.vue'
 
 const routes = [
   {
     path: '/',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '/search',
+    name: 'Search',
+    component: Search
   },
   {
     path: '/shop/:id',
