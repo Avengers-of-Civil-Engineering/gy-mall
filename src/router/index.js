@@ -8,6 +8,7 @@ import OrderList from '@/views/orderList/OrderList.vue'
 import CartList from '@/views/cartList/CartList.vue'
 import Mine from '@/views/mine/Mine.vue'
 import Search from '@/views/search/Search.vue'
+import SearchResult from '@/views/search/SearchResult.vue'
 
 const routes = [
   {
@@ -19,6 +20,11 @@ const routes = [
     path: '/search',
     name: 'Search',
     component: Search
+  },
+  {
+    path: '/searchResult',
+    name: 'SearchResult',
+    component: SearchResult
   },
   {
     path: '/shop/:id',

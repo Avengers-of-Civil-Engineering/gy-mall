@@ -2,13 +2,11 @@
   <div class="wrapper">
     <div class="search">
       <div class="search__input">
-        <span class="iconfont">&#xe6a0;</span>
-        <input type="text"
-               placeholder="山姆会员商店优惠商品"
-               class="search__input__text"
-               @click="handleSearch">
       </div>
-      <div class="search__cancel">取消</div>
+      <SearchBar msg="尖椒肉丝"
+                 @search="handleSearchEnter" />
+      <div class="search__cancel"
+           @click="handleBack">取消</div>
     </div>
     <div class="category">
       <h3 class="category__title">
@@ -43,8 +41,21 @@
 </template>
 
 <script>
+import { useRouter } from 'vue-router'
+import SearchBar from '@/components/SearchBar.vue'
+import { useBackRouterEffect } from '@/components/Back.vue'
+
 export default {
-  name: 'Search'
+  name: 'Search',
+  components: { SearchBar },
+  setup () {
+    const router = useRouter()
+    const handleSearchEnter = () => {
+      router.push({ name: 'SearchResult' })
+    }
+    const { handleBack } = useBackRouterEffect()
+    return { handleSearchEnter, handleBack }
+  }
 }
 </script>
 
@@ -65,22 +76,6 @@ export default {
   margin: 0.16rem 0 0 0;
   position: relative;
   line-height: 0.32rem;
-  &__input {
-    flex: 1;
-    background: $search-bgColor;
-    color: $search-fontColor;
-    border-radius: 0.16rem;
-    &__text {
-      display: inline-block;
-      font-size: 0.14rem;
-      @include formatInput;
-    }
-  }
-  .iconfont {
-    display: inline-block;
-    font-size: 0.16rem;
-    padding: 0 0.08rem 0 0.16rem;
-  }
   &__cancel {
     margin-left: 0.12rem;
     width: 0.32rem;

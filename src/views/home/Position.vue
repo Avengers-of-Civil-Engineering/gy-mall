@@ -6,27 +6,25 @@
       <span class="iconfont position__notice">&#xe60b;</span>
     </div>
     <div class="search">
-      <span class="iconfont">&#xe6a0;</span>
-      <!-- <span class="search__text">山姆会员商店优惠商品</span> -->
-      <input type="text"
-             placeholder="山姆会员商店优惠商品"
-             class="search__text"
-             @click="handleSearch">
+      <SearchBar msg="山姆会员商店优惠商品"
+                 @toSearch="handleToSearch" />
     </div>
   </div>
 </template>
 
 <script>
 import { useRouter } from 'vue-router'
+import SearchBar from '@/components/SearchBar.vue'
 
 export default {
   name: 'Position',
+  components: { SearchBar },
   setup () {
     const router = useRouter()
-    const handleSearch = () => {
+    const handleToSearch = () => {
       router.push({ name: 'Search' })
     }
-    return { handleSearch }
+    return { handleToSearch }
   }
 }
 </script>
@@ -68,15 +66,5 @@ export default {
   background: $search-bgColor;
   color: $search-fontColor;
   border-radius: 0.16rem;
-  .iconfont {
-    display: inline-block;
-    font-size: 0.16rem;
-    padding: 0 0.08rem 0 0.16rem;
-  }
-  &__text {
-    display: inline-block;
-    font-size: 0.14rem;
-    @include formatInput;
-  }
 }
 </style>
