@@ -77,7 +77,7 @@ export default {
   top: 0;
   left: 0;
   right: 0;
-  height: 2.5rem;
+  height: 2.3rem;
   background-image: radial-gradient(
       circle at top,
       rgba(0, 0, 0, 0) 80%,
@@ -86,7 +86,7 @@ export default {
     linear-gradient(239deg, #3a6ff3 0%, #50c7fb 100%);
   &__edit {
     position: absolute;
-    top: 0.57rem;
+    top: 0.37rem;
     right: 0.21rem;
     font-size: 0.2rem;
     color: $bg-color;
@@ -94,7 +94,7 @@ export default {
 }
 .user {
   position: relative;
-  top: 1.08rem;
+  top: 0.88rem;
   box-shadow: 0 0.08rem 0.16rem 0 rgba(0, 0, 0, 0.08);
   border-radius: 0.08rem;
   background: $bg-color;
@@ -153,7 +153,7 @@ export default {
   margin-top: 0.16rem;
   padding: 0 0.16rem;
   box-sizing: border-box;
-  top: 1.08rem;
+  top: 0.88rem;
   box-shadow: 0 0.08rem 0.16rem 0 rgba(0, 0, 0, 0.08);
   border-radius: 0.08rem;
   background: $bg-color;

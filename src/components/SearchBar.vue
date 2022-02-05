@@ -38,11 +38,13 @@ export default {
 @import "@/style/mixins";
 
 .input {
+  display: flex;
   flex: 1;
   background: $search-bgColor;
   color: $search-fontColor;
   border-radius: 0.16rem;
   &__text {
+    flex: 1;
     display: inline-block;
     font-size: 0.14rem;
     @include formatInput;
@@ -52,5 +54,6 @@ export default {
   display: inline-block;
   font-size: 0.16rem;
   padding: 0 0.08rem 0 0.16rem;
+  width: 0.16rem;
 }
 </style>

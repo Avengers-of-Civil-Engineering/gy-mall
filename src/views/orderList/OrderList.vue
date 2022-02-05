@@ -85,7 +85,7 @@ export default {
   top: 0;
   left: 0;
   right: 0;
-  margin: 0.31rem 0 0.11rem 0;
+  margin: 0.11rem 0;
   line-height: 0.22rem;
   font-size: 0.16rem;
   text-align: center;
@@ -95,7 +95,7 @@ export default {
 .wrapper {
   overflow-y: auto;
   position: absolute;
-  top: 0.64rem;
+  top: 0.44rem;
   left: 0;
   right: 0;
   bottom: 0.5rem;

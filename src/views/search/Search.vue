@@ -65,7 +65,7 @@ export default {
 
 .wrapper {
   position: absolute;
-  top: 0.2rem;
+  top: 0;
   left: 0;
   right: 0;
   bottom: 0;
