@@ -2,32 +2,32 @@
   <div class="content">
     <div class="category">
       <div v-for="item in categories"
-           :key="item.name"
-           :class="{'category__item': true, 'category__item--active': item.tab === currentTab}"
-           @click="() => handleTabClick(item.tab)">
+           :key="item.id"
+           :class="{'category__item': true, 'category__item--active': item.slug === currentTab}"
+           @click="() => handleTabClick(item.slug)">
         {{item.name}}
       </div>
     </div>
     <div class="product">
       <div class="product__item"
            v-for="item in list"
-           :key="item._id">
-        <img :src="item.imgUrl"
+           :key="item.id">
+        <img :src="item.img.img"
              class="product__item__img">
         <div class="product__item__details">
           <h4 class="product__item__title">{{item.name}}</h4>
           <p class="product__item__sales">月售{{item.sales}}件</p>
           <p class="product__item__price">
             <span class="product__item__yen">&yen;</span>{{item.price}}
-            <span class="product__item__origin">&yen;{{item.oldPrice}}</span>
+            <span class="product__item__origin">&yen;{{item.old_price}}</span>
           </p>
         </div>
         <div class="product__item__number">
           <span class="product__item__number__minus iconfont"
-                @click="() => {changeCartItem(shopId, item._id, item, -1, shopName)}">&#xe780;</span>
-          <span class="product__item__number__num">{{getProductCartCount(shopId, item._id)}}</span>
+                @click="() => {changeCartItem(shopId, item.id, item, -1, shopName)}">&#xe780;</span>
+          <span class="product__item__number__num">{{getProductCartCount(shopId, item.id)}}</span>
           <span class="product__item__number__plus iconfont"
-                @click="() => {changeCartItem(shopId, item._id, item, 1, shopName)}">&#xe653;</span>
+                @click="() => {changeCartItem(shopId, item.id, item, 1, shopName)}">&#xe653;</span>
         </div>
       </div>
     </div>
@@ -42,19 +42,30 @@ import useCommonCartEffect from '@/effect/CartEffects.js'
 import { useStore } from 'vuex'
 
 // 侧边栏 品类
-const categories = [
-  { name: '全部商品', tab: 'all' },
-  { name: '秒杀', tab: 'seckill' },
-  { name: '新鲜水果', tab: 'fruit' }
-]
+const useCategoriesEffect = (shopId) => {
+  const data = reactive({
+    categories: []
+  })
+  const getCategories = async () => {
+    try {
+      const result = await get(`/api/v1/merchants/${shopId}/tabs/`)
+      console.log('categories', result)
+      if (result) {
+        data.categories = result
+      }
+    } catch (e) {
+      console.log('请求失败')
+    }
+  }
+  getCategories()
 
-// Tab 切换相关逻辑
-const useTabEffect = () => {
-  const currentTab = ref(categories[0].tab)
+  const currentTab = ref('all')
+  console.log('currentTab', currentTab)
   const handleTabClick = (tab) => {
     currentTab.value = tab
   }
-  return { currentTab, handleTabClick }
+  const { categories } = toRefs(data)
+  return { categories, currentTab, handleTabClick }
 }
 
 // 获取列表内容相关逻辑
@@ -64,10 +75,11 @@ const useCurrentListEffect = (currentTab, shopId) => {
   })
   const getContentData = async () => {
     try {
-      const result = await get(`/api/shop/${shopId}/products`, { tab: currentTab.value })
-      // console.log(result)
-      if (result?.errno === 0 && result?.data?.length) {
-        content.list = result.data
+      // const result = await get(`/api/shop/${shopId}/products`, { tab: currentTab.value })
+      const result = await get(`/api/v1/merchants/${shopId}/products`, { tab: currentTab.value })
+      console.log('tabProductList', result)
+      if (result) {
+        content.list = result
       }
     } catch (e) {
       console.log('请求失败')
@@ -97,7 +109,8 @@ export default {
   setup () {
     const route = useRoute()
     const shopId = route.params.id
-    const { currentTab, handleTabClick } = useTabEffect()
+    const { categories, currentTab, handleTabClick } = useCategoriesEffect(shopId)
+    // const { currentTab, handleTabClick } = useTabEffect(categories)
     const { list } = useCurrentListEffect(currentTab, shopId)
     const { getProductCartCount, changeCartItem } = useCartEffect(shopId)
 
@@ -152,9 +165,9 @@ export default {
       color: $btn-bgColor;
     }
     &__img {
-      width: 0.68rem;
-      height: 0.68rem;
-      margin-right: 0.16rem;
+      width: 0.65rem;
+      height: 0.65rem;
+      margin-right: 0.1rem;
     }
     &__details {
       overflow: hidden;
@@ -193,7 +206,7 @@ export default {
       right: 0;
       bottom: 0.12rem;
       &__minus {
-        margin-right: 0.1rem;
+        margin-right: 0.08rem;
         font-size: 0.2rem;
         color: $medium-fontColor;
       }
@@ -204,7 +217,7 @@ export default {
         color: $content-fontcolor;
       }
       &__plus {
-        margin-left: 0.1rem;
+        margin-left: 0.08rem;
         font-size: 0.2rem;
         color: $btn-bgColor;
       }

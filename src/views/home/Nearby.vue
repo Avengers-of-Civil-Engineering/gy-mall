@@ -1,9 +1,9 @@
 <template>
   <div class="nearby">
     <h3 class="nearby__title">附近店铺</h3>
-    <router-link :to="`/shop/${item._id}`"
+    <router-link :to="`/merchants/${item.id}`"
                  v-for="item in nearbyList"
-                 :key="item._id">
+                 :key="item.id">
       <ShopInfo :item="item" />
     </router-link>
   </div>
@@ -19,10 +19,11 @@ const useNearbyListEffect = () => {
   const nearbyList = ref([])
   const getNearbyList = async () => {
     try {
-      const result = await get('api/shop/hot-list')
-      // console.log(result.data)
-      if (result.errno === 0 && result?.data?.length) {
-        nearbyList.value = result.data
+      // const result = await get('api/shop/hot-list')
+      const result = await get('api/v1/merchants/')
+      console.log(result)
+      if (result?.length) {
+        nearbyList.value = result
       }
     } catch (err) {
       console.log('请求失败')

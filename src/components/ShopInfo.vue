@@ -1,13 +1,13 @@
 <template>
   <div class="shop">
-    <img :src="item.imgUrl"
+    <img :src="item.img?.img"
          class="shop__img">
     <div :class="{'shop__content': true, 'shop__content--bordered': hideBorder ? false : true}">
       <div class="shop__content__title">{{item.name}}</div>
       <div class="shop__content__tags">
         <span class="shop__content__tag">月售{{item.sales}}</span>
-        <span class="shop__content__tag">起送¥{{item.expressLimit}}</span>
-        <span class="shop__content__tag">基础运费¥{{item.expressPrice}}</span>
+        <span class="shop__content__tag">起送¥{{item.express_limit}}</span>
+        <span class="shop__content__tag">基础运费¥{{item.express_price}}</span>
       </div>
       <div class="shop__content__hightlight">{{item.slogan}}</div>
     </div>

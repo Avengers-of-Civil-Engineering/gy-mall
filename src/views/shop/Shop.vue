@@ -32,10 +32,10 @@ const useShopInfoEffect = () => {
   })
   const getItemData = async () => {
     try {
-      const result = await get(`/api/shop/${shopId}`)
+      const result = await get(`/api/v1/merchants/${shopId}`)
       // console.log(result)
-      if (result?.errno === 0 && result?.data) {
-        data.item = result.data
+      if (result) {
+        data.item = result
       }
     } catch (err) {
       console.log(err)

@@ -9,25 +9,25 @@
     </div>
     <div class="shop__item"
          v-for="item in productList"
-         :key="item._id">
+         :key="item.id">
       <div class="shop__item__checked iconfont"
-           @click="() => changeCartItemChecked(shopId, item._id)"
+           @click="() => changeCartItemChecked(shopId, item.id)"
            v-html="item.check ? '&#xe656;' : '&#xe7ae;'"></div>
-      <img :src="item.imgUrl"
+      <img :src="item.img.img"
            class="shop__item__img">
       <div class="shop__item__details">
         <h4 class="shop__item__title">{{item.name}}</h4>
         <p class="shop__item__price">
           <span class="shop__item__yen">&yen;</span>{{item.price}}
-          <span class="shop__item__origin">&yen;{{item.oldPrice}}</span>
+          <span class="shop__item__origin">&yen;{{item.old_price}}</span>
         </p>
       </div>
       <div class="shop__item__number">
         <span class="shop__item__number__minus iconfont"
-              @click="() => {changeCartItemInfo(shopId, item._id, item, -1)}">&#xe780;</span>
-        <span class="shop__item__number__num">{{getProductCartCount(shopId, item._id)}}</span>
+              @click="() => {changeCartItemInfo(shopId, item.id, item, -1)}">&#xe780;</span>
+        <span class="shop__item__number__num">{{getProductCartCount(shopId, item.id)}}</span>
         <span class="shop__item__number__plus iconfont"
-              @click="() => {changeCartItemInfo(shopId, item._id, item, 1)}">&#xe653;</span>
+              @click="() => {changeCartItemInfo(shopId, item.id, item, 1)}">&#xe653;</span>
       </div>
     </div>
   </div>

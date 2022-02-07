@@ -4,10 +4,10 @@
     <div class="product__title">{{shopName}}</div>
     <div class="product__list">
       <template v-for="(item,key,index) in productList"
-                :key="item._id">
+                :key="item.id">
         <div class="product__item"
              v-if="index < 2 || showMore">
-          <img :src="item.imgUrl"
+          <img :src="item.img.img"
                class="product__item__img">
           <div class="product__item__details">
             <h4 class="product__item__title">{{item.name}}</h4>
