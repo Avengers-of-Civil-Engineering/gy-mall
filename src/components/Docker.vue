@@ -36,6 +36,7 @@ export default {
 .docker {
   display: flex;
   position: absolute;
+  z-index: 10;
   box-sizing: border-box;
   padding: 0 0.18rem;
   left: 0;

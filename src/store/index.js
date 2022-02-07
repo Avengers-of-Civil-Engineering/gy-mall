@@ -63,6 +63,25 @@ export default createStore({
       }
       setLocalStorage(state)
     },
+    toggleAllSelected (state, payload) {
+      const { isAllSelected } = payload
+      console.log('isAllSelected', isAllSelected)
+      const cartList = state.cartList
+      for (const i in cartList) {
+        const productList = cartList?.[i]?.productList
+        if (productList) {
+          for (const i in productList) {
+            const product = productList[i]
+            if (isAllSelected) {
+              product.check = false
+            } else {
+              product.check = true
+            }
+          }
+        }
+      }
+      setLocalStorage(state)
+    },
     cleanCart (state, payload) {
       const { shopId } = payload
       // console.log('shopId', shopId)

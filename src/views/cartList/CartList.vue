@@ -1,30 +1,30 @@
 <template>
   <div class="title">购物车</div>
   <div class="wrapper">
-    <div class="shop">
+    <div class="shops">
       <template v-for="(item, key) in cartList"
                 :key="key">
-        <CartProductTab :shopName="item.shopName"
-                        :productList="item.productList" />
+        <CartProductInfo :shopId="key"
+                         :shopName="item.shopName" />
       </template>
     </div>
   </div>
+  <Check />
   <Docker :currentIndex="1" />
 </template>
 
 <script>
-import useCommonCartEffect from '@/effect/CartEffects.js'
+import { useStore } from 'vuex'
+import CartProductInfo from '@/components/CartProductInfo.vue'
+import Check from './Check.vue'
 import Docker from '@/components/Docker.vue'
-import CartProductTab from '@/components/CartProductTab.vue'
 
 export default {
   name: 'CartList',
-  components: { Docker, CartProductTab },
+  components: { Check, Docker, CartProductInfo },
   setup () {
-    const { cartList } = useCommonCartEffect()
-    // cartList: {shopId: {shopName: '', productList: { productId: {} } }
-    console.log('cartList', cartList)
-
+    const store = useStore()
+    const cartList = store.state.cartList
     return { cartList }
   }
 }
@@ -51,15 +51,15 @@ export default {
   top: 0.44rem;
   left: 0;
   right: 0;
-  bottom: 0.5rem;
+  bottom: 1rem;
   padding: 0.16rem 0.18rem;
   background: $page-bgColor;
 }
-.shop {
+.shops {
   position: absolute;
   top: 0rem;
   left: 0.18rem;
   right: 0.18rem;
-  bottom: 0;
+  bottom: 0.16rem;
 }
 </style>

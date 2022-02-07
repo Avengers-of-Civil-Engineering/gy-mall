@@ -1,9 +1,9 @@
 <template>
   <div class="product"
-       v-if="isNotEmpty">
+       v-if="!!productNumber">
     <div class="product__title">{{shopName}}</div>
     <div class="product__list">
-      <template v-for="(item,key,index) in newProductList"
+      <template v-for="(item,key,index) in productList"
                 :key="item._id">
         <div class="product__item"
              v-if="index < 2 || showMore">
@@ -41,33 +41,25 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
+import useCommonCartEffect from '@/effect/CartEffects.js'
 
 export default {
-  name: 'ProductList',
-  props: ['shopName', 'productList'],
+  name: 'OrderConfirmProducts',
+  props: ['shopId'],
   setup (props) {
-    const newProductList = computed(() => {
-      const productList = props.productList
-      const noEmptyProductList = {}
-      for (const i in productList) {
-        const product = productList[i]
-        if (product.count > 0) {
-          noEmptyProductList[i] = product
-        }
-      }
-      return noEmptyProductList
-    })
-    const newProductListKeys = Object.keys(newProductList.value)
-    const productNumber = newProductListKeys.length
-    const isNotEmpty = !!productNumber
-    // console.log('isNotEmpty', isNotEmpty)
-    // console.log('newProductList', newProductList, newProductList.value)
+    const shopId = ref(props.shopId)
+    // console.log('shopId', shopId.value)
+    const { shopName, productList } = useCommonCartEffect(shopId.value)
+    // console.log('productList', productList)
+    const productListKeys = Object.keys(productList.value)
+    const productNumber = productListKeys.length
+
     const showMore = ref(false)
     const handleShowMoreOrLess = (isMore) => {
       showMore.value = isMore
     }
-    return { productNumber, isNotEmpty, newProductList, showMore, handleShowMoreOrLess }
+    return { shopName, productList, productNumber, showMore, handleShowMoreOrLess }
   }
 }
 </script>
