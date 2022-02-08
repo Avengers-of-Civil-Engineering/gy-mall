@@ -12,7 +12,8 @@
         <span class="top__receiver__info__name">瑶妹（先生）</span>
         <span class="top__receiver__info__phone">18911024266</span>
       </div>
-      <div class="top__receiver__icon iconfont">&#xe679;</div>
+      <div class="top__receiver__icon iconfont"
+           @click="handleGoClick">&#xe6a3;</div>
     </div>
   </div>
 </template>
@@ -27,7 +28,10 @@ export default {
     const handleBackClick = () => {
       router.back()
     }
-    return { handleBackClick }
+    const handleGoClick = () => {
+      router.push({ name: 'AddressManage' })
+    }
+    return { handleBackClick, handleGoClick }
   }
 }
 </script>
@@ -86,7 +90,6 @@ export default {
       right: 0.16rem;
       font-size: 0.18rem;
       color: $medium-fontColor;
-      transform: rotate(180deg);
     }
   }
 }

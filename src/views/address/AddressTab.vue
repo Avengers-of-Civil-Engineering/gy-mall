@@ -8,7 +8,7 @@
     </div>
     <div class="receiver__address">{{item.address}}</div>
     <div class="receiver__icon iconfont"
-         @click="handleEditClick">&#xe679;</div>
+         @click="handleEditClick">&#xe6a3;</div>
   </div>
 </template>
 
@@ -76,7 +76,6 @@ export default {
     right: 0.16rem;
     font-size: 0.18rem;
     color: $medium-fontColor;
-    transform: rotate(180deg);
   }
 }
 </style>

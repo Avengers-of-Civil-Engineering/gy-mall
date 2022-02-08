@@ -4,7 +4,7 @@
       <div class="top__edit iconfont">&#xe631;</div>
     </div>
     <div class="user">
-      <img src="https://lh3.googleusercontent.com/a-/AOh14Gj-5hAQkbP3n3iA73U8hQ14xTnNs4ztSM7s0tIz=s192-c-rg-br100"
+      <img src="./badBear.png"
            class="user__img">
       <div class="user__info">
         <h1 class="user__info__name">小浣熊</h1>
@@ -109,9 +109,10 @@ export default {
   background: $bg-color;
   &__img {
     position: absolute;
-    top: -20%;
     width: 0.94rem;
     height: 0.94rem;
+    border-radius: 50%;
+    top: -20%;
     left: 50%;
     transform: translateX(-50%);
   }
