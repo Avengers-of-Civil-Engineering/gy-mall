@@ -1,5 +1,6 @@
 <template>
-  <div class="title">我的订单</div>
+
+  <Head title="我的订单" />
   <div class="wrapper">
     <div class="order"
          v-for="(item, index) in list"
@@ -30,6 +31,7 @@
 <script>
 import { reactive, toRefs } from 'vue'
 import { get } from '@/utils/request.js'
+import Head from '@/components/Head.vue'
 import Docker from '@/components/Docker.vue'
 
 // 处理请求订单信息的逻辑
@@ -67,7 +69,7 @@ const useGetOrderListEffect = () => {
 
 export default {
   name: 'OrderList',
-  components: { Docker },
+  components: { Head, Docker },
   setup () {
     const { list, getOrderList } = useGetOrderListEffect()
     getOrderList()
@@ -80,18 +82,6 @@ export default {
 <style lang="scss" scoped>
 @import "@/style/variables.scss";
 
-.title {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  margin: 0.11rem 0;
-  line-height: 0.22rem;
-  font-size: 0.16rem;
-  text-align: center;
-  color: $content-fontcolor;
-  background: $bg-color;
-}
 .wrapper {
   overflow-y: auto;
   position: absolute;

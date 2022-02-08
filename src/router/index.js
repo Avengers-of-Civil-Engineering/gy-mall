@@ -9,6 +9,9 @@ import CartList from '@/views/cartList/CartList.vue'
 import Mine from '@/views/mine/Mine.vue'
 import Search from '@/views/search/Search.vue'
 import SearchResult from '@/views/search/SearchResult.vue'
+import AddressManage from '@/views/address/AddressManage.vue'
+import EditAddress from '@/views/address/EditAddress.vue'
+import NewAddress from '@/views/address/NewAddress.vue'
 
 const routes = [
   {
@@ -50,6 +53,21 @@ const routes = [
     path: '/mine',
     name: 'Mine',
     component: Mine
+  },
+  {
+    path: '/addressManage',
+    name: 'AddressManage',
+    component: AddressManage
+  },
+  {
+    path: '/editAddress',
+    name: 'EditAddress',
+    component: EditAddress
+  },
+  {
+    path: '/newAddress',
+    name: 'NewAddress',
+    component: NewAddress
   },
   {
     path: '/login',

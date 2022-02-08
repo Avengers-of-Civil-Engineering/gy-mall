@@ -1,5 +1,6 @@
 <template>
-  <div class="title">购物车</div>
+
+  <Head title="购物车" />
   <div class="wrapper">
     <div class="shops">
       <template v-for="(item, key) in cartList"
@@ -18,10 +19,11 @@ import { useStore } from 'vuex'
 import CartProductInfo from '@/components/CartProductInfo.vue'
 import Check from './Check.vue'
 import Docker from '@/components/Docker.vue'
+import Head from '@/components/Head.vue'
 
 export default {
   name: 'CartList',
-  components: { Check, Docker, CartProductInfo },
+  components: { Head, Check, Docker, CartProductInfo },
   setup () {
     const store = useStore()
     const cartList = store.state.cartList
@@ -33,18 +35,6 @@ export default {
 <style lang="scss" scoped>
 @import "@/style/variables.scss";
 
-.title {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  margin: 0.11rem 0;
-  line-height: 0.22rem;
-  font-size: 0.16rem;
-  text-align: center;
-  color: $content-fontcolor;
-  background: $bg-color;
-}
 .wrapper {
   overflow-y: auto;
   position: absolute;

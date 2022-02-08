@@ -39,7 +39,8 @@
       <div class="card__item">
         <div class="card__item__icon card__item__icon__2 iconfont">&#xe65e;</div>
         <div class="card__item__text">我的地址</div>
-        <div class="card__item__go iconfont">&#xe6a3;</div>
+        <div class="card__item__go iconfont"
+             @click="handleGoClick">&#xe6a3;</div>
       </div>
       <div class="card__item">
         <div class="card__item__icon card__item__icon__3 iconfont">&#xe740;</div>
@@ -53,10 +54,18 @@
 
 <script>
 import Docker from '@/components/Docker.vue'
+import { useRouter } from 'vue-router'
 
 export default {
   name: 'Mine',
-  components: { Docker }
+  components: { Docker },
+  setup () {
+    const router = useRouter()
+    const handleGoClick = () => {
+      router.push({ name: 'AddressManage' })
+    }
+    return { handleGoClick }
+  }
 }
 </script>
 
