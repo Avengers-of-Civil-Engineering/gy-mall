@@ -2,10 +2,10 @@
   <div class="wrapper">
     <div class="search">
       <Back />
-      <SearchBar msg="尖椒" />
+      <SearchBar :msg="msg" />
     </div>
     <div class="result">
-      <router-link :to="`/shop/${item._id}`"
+      <router-link :to="`/merchants/${item.id}`"
                    v-for="item in searchResultList"
                    :key="item._id">
         <ShopInfo :item="item" />
@@ -15,7 +15,8 @@
 </template>
 
 <script>
-import { ref } from '@vue/reactivity'
+import { ref, computed } from 'vue'
+import { useStore } from 'vuex'
 import { get } from '@/utils/request.js'
 import Back from '@/components/Back.vue'
 import SearchBar from '@/components/SearchBar.vue'
@@ -26,10 +27,10 @@ const useSearchResultListEffect = () => {
   const searchResultList = ref([])
   const getSearchResultList = async () => {
     try {
-      const result = await get('api/shop/hot-list')
-      // console.log(result.data)
-      if (result.errno === 0 && result?.data?.length) {
-        searchResultList.value = result.data
+      const result = await get('api/v1/merchants')
+      // console.log(result)
+      if (result) {
+        searchResultList.value = result
       }
     } catch (err) {
       console.log('请求失败')
@@ -42,9 +43,11 @@ export default {
   name: 'SearchResult',
   components: { Back, SearchBar, ShopInfo },
   setup () {
+    const store = useStore()
+    const msg = computed(() => store.state.searchHistory[0])
     const { searchResultList, getSearchResultList } = useSearchResultListEffect()
     getSearchResultList()
-    return { searchResultList, getSearchResultList }
+    return { msg, searchResultList, getSearchResultList }
   }
 }
 </script>

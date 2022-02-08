@@ -3,6 +3,7 @@
     <span class="iconfont">&#xe6a0;</span>
     <input type="text"
            :placeholder="msg"
+           v-model="inputValue"
            class="input__text"
            @click="toSearch"
            @keyup.enter="search">
@@ -10,6 +11,8 @@
 </template>
 
 <script>
+import { ref } from 'vue'
+
 export default {
   name: 'SearchBar',
   props: {
@@ -22,13 +25,14 @@ export default {
   },
   emits: ['toSearch', 'search'],
   setup (props, { emit }) {
+    const inputValue = ref('')
     const toSearch = () => {
       emit('toSearch')
     }
     const search = () => {
-      emit('search')
+      emit('search', inputValue.value)
     }
-    return { toSearch, search }
+    return { inputValue, toSearch, search }
   }
 }
 </script>

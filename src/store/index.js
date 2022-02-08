@@ -4,6 +4,10 @@ const setLocalStorage = (state) => {
   const { cartList } = state
   localStorage.cartList = JSON.stringify(cartList)
 }
+const setLocalSearchHistory = (state) => {
+  const { searchHistory } = state
+  localStorage.searchHistory = JSON.stringify(searchHistory)
+}
 
 const getLocalCartList = () => {
   try {
@@ -12,11 +16,19 @@ const getLocalCartList = () => {
     return {}
   }
 }
+const getLocalSearchHistory = () => {
+  try {
+    return JSON.parse(localStorage.searchHistory)
+  } catch (e) {
+    return []
+  }
+}
 
 export default createStore({
   state: {
     // cartList: {shopId: {shopName: '', productList: { productId: {} } }
-    cartList: getLocalCartList()
+    cartList: getLocalCartList(),
+    searchHistory: getLocalSearchHistory()
   },
   mutations: {
     changeCartItemInfo (state, payload) {
@@ -97,6 +109,29 @@ export default createStore({
         product.check = !product.check
       }
       setLocalStorage(state)
+    },
+    addToSearchHistory (state, payload) {
+      const { inputValue } = payload
+      // console.log('--inputValue--', inputValue)
+      const historyList = state.searchHistory
+      // inputValue 不为空时处理数据
+      if (inputValue) {
+        const index = historyList.findIndex(item => item === inputValue)
+        // console.log('index', index)
+        if (index < 0) {
+          historyList.unshift(inputValue)
+        } else {
+          // 若为已有搜索记录，则将其替换到第一位
+          historyList.splice(index, 1)
+          historyList.unshift(inputValue)
+        }
+      }
+      state.searchHistory = historyList
+      setLocalSearchHistory(state)
+    },
+    clearSearchHistory (state) {
+      state.searchHistory = []
+      setLocalSearchHistory(state)
     }
   },
   actions: {

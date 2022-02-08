@@ -11,22 +11,21 @@
     <div class="category">
       <h3 class="category__title">
         搜索历史
-        <span class="category__clear">清除搜索历史</span>
+        <span class="category__clear"
+              @click="handleClearHistory">清除搜索历史</span>
       </h3>
       <div class="category__items">
-        <span class="category__item">尖椒肉丝</span>
-        <span class="category__item">鲜花</span>
-        <span class="category__item">山姆会员店</span>
-        <span class="category__item">新鲜水果</span>
-        <span class="category__item">生日鲜花</span>
-        <span class="category__item">香槟玫瑰</span>
-        <span class="category__item">酸奶</span>
-        <span class="category__item">牛奶</span>
+        <span v-for="item in historyList"
+              :key="item"
+              class="category__item">{{item}}</span>
       </div>
     </div>
     <div class="category">
       <h3 class="category__title">热门搜索</h3>
       <div class="category__items">
+        <!-- <span v-for="item in hotSearchList"
+              :key="item"
+              class="category__item">{{item}}</span> -->
         <span class="category__item">尖椒肉丝</span>
         <span class="category__item">鲜花</span>
         <span class="category__item">山姆会员店</span>
@@ -41,20 +40,35 @@
 </template>
 
 <script>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import SearchBar from '@/components/SearchBar.vue'
 import { useBackRouterEffect } from '@/components/Back.vue'
+
+// 获取历史搜索记录列表
+const useSearchHistoryEffect = () => {
+  const store = useStore()
+  const router = useRouter()
+  const historyList = computed(() => store.state.searchHistory)
+  const handleSearchEnter = (inputValue) => {
+    store.commit('addToSearchHistory', { inputValue })
+    router.push({ name: 'SearchResult' })
+  }
+  const handleClearHistory = () => {
+    store.commit('clearSearchHistory')
+  }
+
+  return { historyList, handleSearchEnter, handleClearHistory }
+}
 
 export default {
   name: 'Search',
   components: { SearchBar },
   setup () {
-    const router = useRouter()
-    const handleSearchEnter = () => {
-      router.push({ name: 'SearchResult' })
-    }
+    const { historyList, handleSearchEnter, handleClearHistory } = useSearchHistoryEffect()
     const { handleBack } = useBackRouterEffect()
-    return { handleSearchEnter, handleBack }
+    return { historyList, handleSearchEnter, handleClearHistory, handleBack }
   }
 }
 </script>
