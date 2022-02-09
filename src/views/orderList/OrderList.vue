@@ -6,13 +6,15 @@
          v-for="(item, index) in list"
          :key="index">
       <div class="order__title">
+        <!-- TODO: 缺订单商铺名 -->
         {{item.shopName}}
-        <span class="order__status">{{item.isCanceled ? '已取消': '已下单'}}</span>
+        <span class="order__status">{{item.status}}</span>
       </div>
       <div class="order__content">
         <div class="order__content__imgs">
-          <template v-for="(innerItem, innerIndex) in item.products"
+          <template v-for="(innerItem, innerIndex) in item.items"
                     :key="innerIndex">
+            <!-- TODO: 缺订单商品的图片 -->
             <img class="order__content__img"
                  :src="innerItem.product.img"
                  v-if="innerIndex <= 3">
@@ -41,23 +43,23 @@ const useGetOrderListEffect = () => {
   })
   const getOrderList = async () => {
     try {
-      const result = await get('/api/order')
+      const result = await get('/api/v1/orders/')
       console.log(result)
-      if (result?.errno === 0 && result?.data?.length > 0) {
-        const orderList = result.data
+      if (result) {
+        const orderList = result
         orderList.forEach(order => {
-          const productList = order?.products || []
+          const productList = order?.items || []
           let totalNumber = 0
           let totalPrice = 0
           productList.forEach(productItem => {
-            totalNumber += (productItem?.orderSales || 0)
-            totalPrice += (productItem?.orderSales * productItem?.product?.price || 0)
+            totalNumber += (productItem?.quantity || 0)
+            totalPrice += (productItem?.quantity * productItem?.price || 0)
           })
           order.totalNumber = totalNumber
           order.totalPrice = totalPrice
         })
-        // data.list = result.data
         data.list = orderList
+        console.log('orderList', data.list)
       }
     } catch (e) {
       console.log('请求失败')
@@ -111,6 +113,7 @@ export default {
     color: $light-fontColor;
   }
   &__content {
+    width: 100%;
     margin-top: 0.16rem;
     display: flex;
     &__imgs {

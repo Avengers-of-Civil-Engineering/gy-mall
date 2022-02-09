@@ -34,23 +34,26 @@ const modalData = {
 const useConfirmOrderEffect = (shopId, shopName, productList) => {
   const store = useStore()
   const router = useRouter()
+  const selectedAddressId = localStorage.getItem('selectedAddressId')
+  const addressId = parseInt(selectedAddressId, 10)
+  // console.log(typeof addressId)
   const { show, toastMessage, showToast } = useToastEffect()
   const handleConfirmOrder = async (isCanceled) => {
     const products = []
     for (const i in productList.value) {
       const product = productList.value[i]
-      products.push({ id: parseInt(product._id, 10), num: product.count })
+      products.push({ product_id: parseInt(product.id, 10), quantity: product.count })
     }
     try {
-      const result = await post('/api/order', {
-        addressId: 1,
-        shopId,
-        shopName: shopName.value,
-        isCanceled,
-        products
+      const result = await post('/api/v1/orders/', {
+        address_id: addressId,
+        // shopId,
+        // shopName: shopName.value,
+        // isCanceled,
+        items: products
       })
       console.log(result)
-      if (result?.errno === 0) {
+      if (result) {
         store.commit('cleanCart', { shopId })
         router.push({ name: 'OrderList' })
       } else {

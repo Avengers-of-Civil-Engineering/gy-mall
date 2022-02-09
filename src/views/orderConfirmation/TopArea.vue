@@ -7,31 +7,57 @@
     </div>
     <div class="top__receiver">
       <div class="top__receiver__title">收货地址</div>
-      <div class="top__receiver__address">北京理工大学国防科技园2号楼10层</div>
+      <div class="top__receiver__address">{{selectedAddress.address_full_txt}}</div>
       <div class="top__receiver__info">
-        <span class="top__receiver__info__name">瑶妹（先生）</span>
-        <span class="top__receiver__info__phone">18911024266</span>
+        <span class="top__receiver__info__name">{{selectedAddress.name}}</span>
+        <span class="top__receiver__info__phone">{{selectedAddress.phone_number}}</span>
       </div>
       <div class="top__receiver__icon iconfont"
-           @click="handleGoClick">&#xe6a3;</div>
+           @click="handleToSelectAddress">&#xe6a3;</div>
     </div>
   </div>
 </template>
 
 <script>
+import { reactive, toRefs } from 'vue'
 import { useRouter } from 'vue-router'
+import { get } from '@/utils/request.js'
+
+const getSelectedAddressInfoEffect = () => {
+  const data = reactive({
+    selectedAddress: {}
+  })
+  const selectedAddressId = localStorage.getItem('selectedAddressId')
+  console.log('selectedAddressId', selectedAddressId)
+  const getSelectedAddress = async () => {
+    try {
+      const result = await get(`/api/v1/addresses/${selectedAddressId}/`)
+      console.log('result', result)
+      if (result) {
+        data.selectedAddress = result
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }
+  getSelectedAddress()
+  const { selectedAddress } = toRefs(data)
+  return { selectedAddress }
+}
 
 export default {
   name: 'TopArea',
   setup () {
     const router = useRouter()
+
     const handleBackClick = () => {
       router.back()
     }
-    const handleGoClick = () => {
+    const handleToSelectAddress = () => {
       router.push({ name: 'AddressManage' })
     }
-    return { handleBackClick, handleGoClick }
+    const { selectedAddress } = getSelectedAddressInfoEffect()
+    return { selectedAddress, handleBackClick, handleToSelectAddress }
   }
 }
 </script>
@@ -83,6 +109,9 @@ export default {
       line-height: 0.17rem;
       font-size: 0.12rem;
       color: $medium-fontColor;
+      &__name {
+        margin-right: 0.2rem;
+      }
     }
     &__icon {
       position: absolute;

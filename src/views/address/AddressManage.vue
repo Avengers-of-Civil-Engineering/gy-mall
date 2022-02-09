@@ -6,7 +6,7 @@
         @go="handleNew" />
   <div class="wrapper">
     <div class="text">我的收货地址</div>
-    <AddressTab />
+    <AddressTab @selectId="handleSelect" />
   </div>
 </template>
 
@@ -23,7 +23,12 @@ export default {
     const handleNew = () => {
       router.push({ name: 'NewAddress' })
     }
-    return { handleNew }
+    const handleSelect = (id) => {
+      // TODO: 如何传递收货地址id
+      localStorage.setItem('selectedAddressId', id)
+      router.back()
+    }
+    return { handleNew, handleSelect }
   }
 }
 </script>

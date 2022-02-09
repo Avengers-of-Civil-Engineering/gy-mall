@@ -2,7 +2,8 @@
   <div class="receiver"
        v-for="item in addressInfoList"
        :key="item.id">
-    <div class="receiver__info">
+    <div class="receiver__info"
+         @click="() => handleSelect(item.id)">
       <span class="receiver__info__name">{{item.name}}</span>
       <span class="receiver__info__phone">{{item.phone_number}}</span>
     </div>
@@ -40,13 +41,17 @@ const useGetAddressListEffect = () => {
 
 export default {
   name: 'AddressTab',
-  setup () {
+  emits: ['selectId'],
+  setup (props, { emit }) {
     const router = useRouter()
     const handleEditClick = (id) => {
       router.push({ path: `/editAddress/${id}` })
     }
+    const handleSelect = (id) => {
+      emit('selectId', id)
+    }
     const { addressInfoList } = useGetAddressListEffect()
-    return { addressInfoList, handleEditClick }
+    return { addressInfoList, handleSelect, handleEditClick }
   }
 }
 </script>
