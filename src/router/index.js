@@ -57,7 +57,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "addressManage" */ '@/views/address/AddressManage.vue')
   },
   {
-    path: '/editAddress',
+    path: '/editAddress/:id',
     name: 'EditAddress',
     // component: EditAddress,
     component: () => import(/* webpackChunkName: "editAddress" */ '@/views/address/EditAddress.vue')

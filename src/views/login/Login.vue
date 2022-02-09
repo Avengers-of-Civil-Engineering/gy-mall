@@ -59,11 +59,11 @@ const useLoginEffect = (showToast) => {
         // axios 错误处理(Handling Errors)
         if (error.response) {
           // 请求成功发出且服务器也响应了状态码，但状态代码超出了 2xx 的范围
-          console.log(error.response.status)
+          // console.log(error.response.status)
           showToast('请求失败: 用户名或密码错误')
         } else if (error.request) {
           // 请求已经成功发起，但没有收到响应
-          console.log('Error-request', error.request)
+          // console.log('Error-request', error.request)
           showToast('请求失败: 未响应')
         } else {
           // 发送请求时出了点问题

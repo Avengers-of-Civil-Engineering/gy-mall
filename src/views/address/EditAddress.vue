@@ -1,28 +1,17 @@
 <template>
 
   <Head hasBack="true"
-        title="编辑收货地址"
-        goText="保存"
-        @go="handleSave" />
-  <AddressForm />
+        title="编辑收货地址" />
+  <AddressForm msg="edit" />
 </template>
 
 <script>
-import { useRouter } from 'vue-router'
 import Head from '@/components/Head.vue'
 import AddressForm from './AddressForm.vue'
 
 export default {
   name: 'EditAddress',
-  components: { Head, AddressForm },
-  setup () {
-    const router = useRouter()
-    const handleSave = () => {
-      // TODO: 此处应为提交 ’更新收获地址‘ 的修改
-      router.back()
-    }
-    return { handleSave }
-  }
+  components: { Head, AddressForm }
 }
 </script>
 

@@ -1,10 +1,8 @@
 <template>
 
   <Head hasBack="true"
-        title="新建收货地址"
-        goText="保存"
-        @go="handleSave" />
-  <AddressForm />
+        title="新建收货地址" />
+  <AddressForm msg="new" />
 </template>
 
 <script>

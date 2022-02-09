@@ -2,31 +2,100 @@
   <div class="wrapper">
     <div class="content">
       <div class="content__item"
-           v-for="item in formList"
-           :key="item.name">
+           v-for="item in formData"
+           :key="item.id">
         <span class="content__item__tag">{{item.tag}}</span>
         <input class="content__item__input"
-               :value="item.value"
+               v-model="item.value"
                :placeholder="item.placeholder" />
       </div>
     </div>
+    <button class="save"
+            @click="handleSave">保存</button>
   </div>
 </template>
 
 <script>
-// formList 的 value 值：
-// 新建收货地址时，value = ‘’；编辑收货地址时，应从服务器 获取单个收货地址
-const formList = [
-  { tag: '所在城市：', placeholder: '如北京市', value: '北京市' },
-  { tag: '小区/大厦/学校：', placeholder: '如北理工大学国防科技园', value: '北理工大学国防科技园' },
-  { tag: '楼号-门牌号：', placeholder: '如A号楼B层', value: '2号楼10层' },
-  { tag: '收货人：', placeholder: '请填写收货人的姓名', value: '小慕' },
-  { tag: '联系电话：', placeholder: '请填写收货手机号', value: '18911023277' }
-]
+import { reactive } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { get, patch, post } from '@/utils/request.js'
+
+// 获取要编辑的地址详情
+const useGetEditAddressEffect = (formData) => {
+  const route = useRoute()
+  const addressId = route.params.id
+
+  const getEditAddress = async () => {
+    try {
+      const result = await get(`/api/v1/addresses/${addressId}/`)
+      // console.log('result', result)
+      if (result) {
+        formData[0].value = result.address_full_txt
+        formData[3].value = result.name
+        formData[4].value = result.phone_number
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }
+  if (addressId) {
+    getEditAddress()
+  }
+
+  // 提交修改
+  const patchEditResult = async () => {
+    try {
+      const result = await patch(`/api/v1/addresses/${addressId}/`, {
+        address_full_txt: formData[0].value,
+        name: formData[3].value,
+        phone_number: formData[4].value
+      })
+      console.log('result', result)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  // 提交新建收货地址
+  const postNewAddress = async () => {
+    try {
+      const result = await post('/api/v1/addresses/', {
+        address_full_txt: formData[0].value,
+        name: formData[3].value,
+        phone_number: formData[4].value
+      })
+      console.log('result', result)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  return { patchEditResult, postNewAddress }
+}
+
 export default {
   name: 'AddressForm',
-  setup () {
-    return { formList }
+  props: ['msg'],
+  setup (props) {
+    const router = useRouter()
+    const formData = reactive([
+      { id: 1, tag: '所在城市：', placeholder: '如北京市', value: '' },
+      { id: 2, tag: '小区/大厦/学校：', placeholder: '如北理工大学国防科技园', value: '' },
+      { id: 3, tag: '楼号-门牌号：', placeholder: '如A号楼B层', value: '' },
+      { id: 4, tag: '收货人：', placeholder: '请填写收货人的姓名', value: '' },
+      { id: 5, tag: '联系电话：', placeholder: '请填写收货手机号', value: '' }
+    ])
+    const { patchEditResult, postNewAddress } = useGetEditAddressEffect(formData)
+
+    const handleSave = () => {
+      if (props.msg === 'edit') {
+        patchEditResult()
+      } else {
+        postNewAddress()
+      }
+      router.back()
+    }
+    return { formData, handleSave }
   }
 }
 </script>
@@ -63,5 +132,19 @@ export default {
       @include ellipsis;
     }
   }
+}
+.save {
+  position: relative;
+  margin-top: 0.16rem;
+  padding: 0.08rem 0;
+  box-sizing: border-box;
+  width: 80%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.16rem;
+  color: $bg-color;
+  background: $btn-bgcolor;
+  border: none;
+  border-radius: 0.2rem;
 }
 </style>

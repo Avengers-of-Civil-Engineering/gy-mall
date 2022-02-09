@@ -4,40 +4,48 @@
        :key="item.id">
     <div class="receiver__info">
       <span class="receiver__info__name">{{item.name}}</span>
-      <span class="receiver__info__phone">{{item.phone}}</span>
+      <span class="receiver__info__phone">{{item.phone_number}}</span>
     </div>
-    <div class="receiver__address">{{item.address}}</div>
+    <div class="receiver__address">{{item.address_full_txt}}</div>
     <div class="receiver__icon iconfont"
-         @click="handleEditClick">&#xe6a3;</div>
+         @click="() => handleEditClick(item.id)">&#xe6a3;</div>
   </div>
 </template>
 
 <script>
+import { reactive, toRefs } from 'vue'
 import { useRouter } from 'vue-router'
+import { get } from '@/utils/request.js'
 
-// addressInfoList 列表 应是从服务器 ’获取收货地址列表‘
-const addressInfoList = [
-  {
-    id: 1,
-    name: '小慕',
-    phone: '18911023261',
-    address: '北京市海淀区西三环北路 2号院 北京理工大学 国防科技园2号楼 10层'
-  },
-  {
-    id: 2,
-    name: '小浣熊',
-    phone: '18911020000',
-    address: '上海市浦东新区'
+// 获取 收货地址 列表
+const useGetAddressListEffect = () => {
+  const addressData = reactive({
+    addressInfoList: []
+  })
+  const getAddressInfoList = async () => {
+    try {
+      const result = await get('/api/v1/addresses/')
+      // console.log('result', result)
+      if (result) {
+        addressData.addressInfoList = result
+      }
+    } catch (e) {
+      console.log('error', e)
+    }
   }
-]
+  getAddressInfoList()
+  const { addressInfoList } = toRefs(addressData)
+  return { addressInfoList }
+}
 
 export default {
   name: 'AddressTab',
   setup () {
     const router = useRouter()
-    const handleEditClick = () => {
-      router.push({ name: 'EditAddress' })
+    const handleEditClick = (id) => {
+      router.push({ path: `/editAddress/${id}` })
     }
+    const { addressInfoList } = useGetAddressListEffect()
     return { addressInfoList, handleEditClick }
   }
 }
