@@ -19,7 +19,7 @@ export const useToastEffect = () => {
   const showToast = (msg) => {
     toastData.show = true
     toastData.toastMessage = msg
-    console.log('toastMessage', msg)
+    // console.log('toastMessage', msg)
     setTimeout(() => {
       toastData.show = false
       toastData.toastMessage = ''

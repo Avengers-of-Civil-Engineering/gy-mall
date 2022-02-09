@@ -24,9 +24,9 @@
 </template>
 
 <script>
+import { reactive, toRefs } from 'vue'
 import { useRouter } from 'vue-router'
 import { post } from '@/utils/request.js'
-import { reactive, toRefs } from 'vue'
 import Toast, { useToastEffect } from '@/components/Toast.vue'
 
 // 处理登陆逻辑
@@ -40,19 +40,37 @@ const useLoginEffect = (showToast) => {
     const { username, password } = data
     if (username !== '' && password !== '') {
       try {
-        const result = await post('/api/user/login', {
+        const result = await post('/api/v1/api-token-auth/', {
           username: username,
           password: password
         })
         // console.log(result)
-        if (result.errno === 0) {
-          localStorage.isLogin = true
+        if (result.token !== '') {
+          // 将用户信息存储到本地
+          localStorage.authInfo = JSON.stringify({
+            token: result.token,
+            loginAt: Date.now()
+          })
           router.push({ name: 'Home' })
         } else {
           showToast('登陆失败')
         }
-      } catch (e) {
-        showToast('请求失败')
+      } catch (error) {
+        // axios 错误处理(Handling Errors)
+        if (error.response) {
+          // 请求成功发出且服务器也响应了状态码，但状态代码超出了 2xx 的范围
+          console.log(error.response.status)
+          showToast('请求失败: 用户名或密码错误')
+        } else if (error.request) {
+          // 请求已经成功发起，但没有收到响应
+          console.log('Error-request', error.request)
+          showToast('请求失败: 未响应')
+        } else {
+          // 发送请求时出了点问题
+          console.log('Error-message', error.message)
+          showToast('发送请求失败')
+        }
+        // console.log(error.config)
       }
     } else {
       showToast('账号密码不能为空')
