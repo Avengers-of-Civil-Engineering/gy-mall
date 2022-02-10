@@ -2,26 +2,28 @@
   <div class="wrapper">
     <TopArea />
     <div class="container">
-      <OrderConfirmProducts :shopId="shopId" />
+      <template v-for="item in toCheckShopIdList"
+                :key="item">
+        <OrderConfirmProducts :shopId="item" />
+      </template>
     </div>
-    <Order isSingle="true" />
+    <Order isSingle="false" />
   </div>
 </template>
 
 <script>
-import { useRoute } from 'vue-router'
 import TopArea from './TopArea.vue'
 import OrderConfirmProducts from '@/components/OrderConfirmProducts.vue'
 import Order from './Order.vue'
+import useCommonCartEffect from '@/effect/CartEffects.js'
 
 export default {
-  name: 'OrderConfirmation',
+  name: 'OrdersConfirmation',
   components: { TopArea, OrderConfirmProducts, Order },
   setup () {
-    const route = useRoute()
-    const shopId = route.params.id
+    const { toCheckShopIdList } = useCommonCartEffect()
 
-    return { shopId }
+    return { toCheckShopIdList }
   }
 }
 </script>

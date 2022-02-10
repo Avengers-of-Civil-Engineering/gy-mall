@@ -1,7 +1,7 @@
 <template>
   <div class="order">
     <div class="order__price">实付金额
-      <b class="order__price__num">&yen;{{calculations.totalPrice}}</b>
+      <b class="order__price__num">&yen;{{cartCheckResult.totalPrice}}</b>
     </div>
     <div class="order__btn"
          @click="handleSubmit">提交订单</div>
@@ -9,7 +9,7 @@
   <Modal v-if="showModal"
          :modalData="modalData"
          @cancel="() => handleConfirmOrder(true)"
-         @ok="() => handleConfirmOrder(false)" />
+         @ok="() => handleConfirmOrder(isSingle)" />
   <Toast v-if="show"
          :message="toastMessage" />
 </template>
@@ -31,25 +31,27 @@ const modalData = {
 }
 
 // 处理提交订单相关逻辑
-const useConfirmOrderEffect = (shopId, shopName, productList) => {
+const useConfirmOrderEffect = () => {
   const store = useStore()
   const router = useRouter()
+  const route = useRoute()
+  const shopId = route.params.id
+  const { checkedProductList, cartCheckResult } = useCommonCartEffect(shopId)
+
   const selectedAddressId = localStorage.getItem('selectedAddressId')
   const addressId = parseInt(selectedAddressId, 10)
   // console.log(typeof addressId)
   const { show, toastMessage, showToast } = useToastEffect()
-  const handleConfirmOrder = async (isCanceled) => {
+  const handleConfirmOrder = async (isSingle) => {
     const products = []
-    for (const i in productList.value) {
-      const product = productList.value[i]
+    for (const i in checkedProductList.value) {
+      const product = checkedProductList.value[i]
       products.push({ product_id: parseInt(product.id, 10), quantity: product.count })
     }
     try {
       const result = await post('/api/v1/orders/', {
         address_id: addressId,
-        // shopId,
-        // shopName: shopName.value,
-        // isCanceled,
+        merchant_id: shopId,
         items: products
       })
       console.log(result)
@@ -63,7 +65,7 @@ const useConfirmOrderEffect = (shopId, shopName, productList) => {
       showToast('请求失败')
     }
   }
-  return { show, toastMessage, handleConfirmOrder }
+  return { show, toastMessage, handleConfirmOrder, cartCheckResult }
 }
 
 export default {
@@ -71,15 +73,13 @@ export default {
   components: { Modal, Toast },
   setup () {
     const showModal = ref(false)
-    const route = useRoute()
-    const shopId = route.params.id
-    const { shopName, productList, calculations } = useCommonCartEffect(shopId)
-    const { show, toastMessage, handleConfirmOrder } = useConfirmOrderEffect(shopId, shopName, productList)
+
+    const { show, toastMessage, handleConfirmOrder, cartCheckResult } = useConfirmOrderEffect()
     const handleSubmit = () => {
       showModal.value = true
     }
 
-    return { calculations, showModal, handleSubmit, modalData, show, toastMessage, handleConfirmOrder }
+    return { cartCheckResult, showModal, handleSubmit, modalData, show, toastMessage, handleConfirmOrder }
   }
 }
 </script>

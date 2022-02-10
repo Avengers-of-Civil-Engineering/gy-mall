@@ -2,65 +2,30 @@
   <div class="check">
     <div class="check__all">
       <span class="check__all__icon iconfont"
-            @click="() => toggleAllSelected(checkResult.isAllSelected)"
-            v-html="checkResult.isAllSelected? '&#xe656;': '&#xe7ae;'"></span>
+            @click="() => toggleAllSelected(cartCheckResult.isAllSelected)"
+            v-html="cartCheckResult.isAllSelected? '&#xe656;': '&#xe7ae;'"></span>
       全选
     </div>
     <div class="check__info">
-      合计:<span class="check__info__price">&yen;{{checkResult.totalPrice}}</span>
+      合计:<span class="check__info__price">&yen;{{cartCheckResult.totalPrice}}</span>
     </div>
     <div class="check__btn"
-         v-if="checkResult.totalPrice > 0">
-      <span class="check__btn__text">去结算</span>
-      <!-- <router-link :to="`/orderConfirmation/${shopId}`">去结算</router-link> -->
+         v-if="cartCheckResult.totalPrice > 0">
+      <span class="check__btn__text">
+        <router-link to="/ordersConfirmation">去结算</router-link>
+      </span>
     </div>
   </div>
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useStore } from 'vuex'
-
-// 计算购物车选中商品价格逻辑
-const useCheckEffect = () => {
-  const store = useStore()
-
-  // 计算购物车总结和是否全选状态
-  const checkResult = computed(() => {
-    const cartList = store.state.cartList
-    // cartList: {shopId: {shopName: '', productList: { productId: {} } }
-    const result = { totalPrice: 0, isAllSelected: true }
-    for (const i in cartList) {
-      const productList = cartList[i]?.productList || {}
-      // console.log('productList', productList)
-      if (productList) {
-        for (const i in productList) {
-          const product = productList[i]
-          if (product.check) {
-            result.totalPrice += product?.count * product?.price
-          }
-          if (product.count > 0 && !product?.check) {
-            result.isAllSelected = false
-          }
-        }
-      }
-    }
-    result.totalPrice = result.totalPrice.toFixed(2)
-    return result
-  })
-
-  // 切换全选状态
-  const toggleAllSelected = (isAllSelected) => {
-    store.commit('toggleAllSelected', { isAllSelected })
-  }
-  return { checkResult, toggleAllSelected }
-}
+import useCommonCartEffect from '@/effect/CartEffects.js'
 
 export default {
   name: 'Check',
   setup () {
-    const { checkResult, toggleAllSelected } = useCheckEffect()
-    return { checkResult, toggleAllSelected }
+    const { cartCheckResult, toggleAllSelected } = useCommonCartEffect()
+    return { cartCheckResult, toggleAllSelected }
   }
 }
 </script>
@@ -109,13 +74,12 @@ export default {
       padding: 0.06rem 0.16rem;
       font-size: 0.14rem;
       background: $btn-bgcolor;
-      color: $bg-color;
       border-radius: 0.2rem;
     }
-    /* a {
+    a {
       color: $bg-color;
       text-decoration: none;
-    } */
+    }
   }
 }
 </style>

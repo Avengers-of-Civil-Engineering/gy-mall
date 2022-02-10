@@ -3,7 +3,7 @@
        v-if="!!productNumber">
     <div class="product__title">{{shopName}}</div>
     <div class="product__list">
-      <template v-for="(item,key,index) in productList"
+      <template v-for="(item,key,index) in checkedProductList"
                 :key="item.id">
         <div class="product__item"
              v-if="index < 2 || showMore">
@@ -48,18 +48,16 @@ export default {
   name: 'OrderConfirmProducts',
   props: ['shopId'],
   setup (props) {
-    const shopId = ref(props.shopId)
-    // console.log('shopId', shopId.value)
-    const { shopName, productList } = useCommonCartEffect(shopId.value)
-    // console.log('productList', productList)
-    const productListKeys = Object.keys(productList.value)
+    const { shopName, checkedProductList } = useCommonCartEffect(props.shopId)
+
+    const productListKeys = Object.keys(checkedProductList.value)
     const productNumber = productListKeys.length
 
     const showMore = ref(false)
     const handleShowMoreOrLess = (isMore) => {
       showMore.value = isMore
     }
-    return { shopName, productList, productNumber, showMore, handleShowMoreOrLess }
+    return { shopName, checkedProductList, productNumber, showMore, handleShowMoreOrLess }
   }
 }
 </script>

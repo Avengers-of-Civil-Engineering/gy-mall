@@ -28,11 +28,11 @@ const getSelectedAddressInfoEffect = () => {
     selectedAddress: {}
   })
   const selectedAddressId = localStorage.getItem('selectedAddressId')
-  console.log('selectedAddressId', selectedAddressId)
+  // console.log('selectedAddressId', selectedAddressId)
   const getSelectedAddress = async () => {
     try {
       const result = await get(`/api/v1/addresses/${selectedAddressId}/`)
-      console.log('result', result)
+      // console.log('result', result)
       if (result) {
         data.selectedAddress = result
       }

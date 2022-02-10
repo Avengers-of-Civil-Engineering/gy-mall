@@ -7,16 +7,16 @@
          :key="index">
       <div class="order__title">
         <!-- TODO: 缺订单商铺名 -->
-        {{item.shopName}}
-        <span class="order__status">{{item.status}}</span>
+        {{item?.merchant?.name}}
+        <span class="order__status">{{item?.status_txt}}</span>
       </div>
       <div class="order__content">
         <div class="order__content__imgs">
-          <template v-for="(innerItem, innerIndex) in item.items"
+          <template v-for="(innerItem, innerIndex) in item?.items"
                     :key="innerIndex">
             <!-- TODO: 缺订单商品的图片 -->
             <img class="order__content__img"
-                 :src="innerItem.product.img"
+                 :src="innerItem?.product_img?.img"
                  v-if="innerIndex <= 3">
           </template>
         </div>
@@ -59,7 +59,6 @@ const useGetOrderListEffect = () => {
           order.totalPrice = totalPrice
         })
         data.list = orderList
-        console.log('orderList', data.list)
       }
     } catch (e) {
       console.log('请求失败')
@@ -68,6 +67,8 @@ const useGetOrderListEffect = () => {
   const { list } = toRefs(data)
   return { list, getOrderList }
 }
+
+// 订单状态列表
 
 export default {
   name: 'OrderList',
