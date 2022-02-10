@@ -8,8 +8,8 @@
   </div>
   <Modal v-if="showModal"
          :modalData="modalData"
-         @cancel="() => handleConfirmOrder(true)"
-         @ok="() => handleConfirmOrder(isSingle)" />
+         @cancel="handleCancelOrder"
+         @ok="handleConfirmOrder" />
   <Toast v-if="show"
          :message="toastMessage" />
 </template>
@@ -31,55 +31,109 @@ const modalData = {
 }
 
 // 处理提交订单相关逻辑
-const useConfirmOrderEffect = () => {
+const useConfirmOrderEffect = (isSingle) => {
+  // console.log('isSingle', isSingle)
   const store = useStore()
   const router = useRouter()
-  const route = useRoute()
-  const shopId = route.params.id
-  const { checkedProductList, cartCheckResult } = useCommonCartEffect(shopId)
-
   const selectedAddressId = localStorage.getItem('selectedAddressId')
   const addressId = parseInt(selectedAddressId, 10)
   // console.log(typeof addressId)
   const { show, toastMessage, showToast } = useToastEffect()
-  const handleConfirmOrder = async (isSingle) => {
+  const orders = []
+  if (isSingle === 'true') {
+    const route = useRoute()
+    const shopId = route.params.id
+    const { checkedProductList } = useCommonCartEffect(shopId)
     const products = []
     for (const i in checkedProductList.value) {
       const product = checkedProductList.value[i]
       products.push({ product_id: parseInt(product.id, 10), quantity: product.count })
     }
-    try {
-      const result = await post('/api/v1/orders/', {
+    orders.push({
+      address_id: addressId,
+      merchant_id: parseInt(shopId, 10),
+      items: products
+    })
+  } else {
+    const { toCheckShopIdList } = useCommonCartEffect()
+    const shopIdList = toCheckShopIdList.value
+    console.log('shopIdList', shopIdList)
+    for (const i in shopIdList) {
+      const shopId = shopIdList[i]
+      console.log('shopId', shopId)
+      const { checkedProductList } = useCommonCartEffect(shopId)
+      const products = []
+      for (const i in checkedProductList.value) {
+        const product = checkedProductList.value[i]
+        products.push({ product_id: parseInt(product.id, 10), quantity: product.count })
+      }
+      orders.push({
         address_id: addressId,
         merchant_id: shopId,
         items: products
       })
-      console.log(result)
-      if (result) {
-        store.commit('cleanCart', { shopId })
-        router.push({ name: 'OrderList' })
-      } else {
-        showToast('获取失败')
-      }
-    } catch (e) {
-      showToast('请求失败')
     }
   }
-  return { show, toastMessage, handleConfirmOrder, cartCheckResult }
+  // 提交订单请求
+  const handleConfirmOrder = async () => {
+    if (isSingle === 'true') {
+      const orderData = orders[0]
+      try {
+        const result = await post('/api/v1/orders/',
+          orderData
+        )
+        console.log(result)
+        if (result) {
+          const shopId = orders[0].merchant_id
+          store.commit('cleanCart', { shopId })
+          router.push({ name: 'OrderList' })
+        } else {
+          showToast('获取失败')
+        }
+      } catch (e) {
+        showToast('请求失败')
+      }
+    } else {
+      console.log('isSingle-false', isSingle)
+      try {
+        console.log('orders', orders)
+        const result = await post('/api/v1/order-collections/', {
+          orders
+        })
+        console.log(result)
+        if (result) {
+          // TODO: 清空已结算的商品
+          store.commit('cleanCartOfChecked')
+          router.push({ name: 'OrderList' })
+        } else {
+          showToast('获取失败')
+        }
+      } catch (e) {
+        showToast('请求失败')
+      }
+    }
+  }
+  return { show, toastMessage, handleConfirmOrder }
 }
 
 export default {
   name: 'Order',
   components: { Modal, Toast },
-  setup () {
+  props: ['isSingle'],
+  setup (props) {
     const showModal = ref(false)
 
-    const { show, toastMessage, handleConfirmOrder, cartCheckResult } = useConfirmOrderEffect()
+    const { cartCheckResult } = useCommonCartEffect()
+    const { show, toastMessage, handleConfirmOrder } = useConfirmOrderEffect(props.isSingle)
     const handleSubmit = () => {
       showModal.value = true
     }
 
-    return { cartCheckResult, showModal, handleSubmit, modalData, show, toastMessage, handleConfirmOrder }
+    const handleCancelOrder = () => {
+      showModal.value = false
+    }
+
+    return { cartCheckResult, showModal, handleSubmit, modalData, show, toastMessage, handleConfirmOrder, handleCancelOrder }
   }
 }
 </script>

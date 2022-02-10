@@ -1,7 +1,7 @@
 <template>
   <div class="shop">
     <div class="shop__title"
-         v-show="shopName">
+         v-if="shopName && productNumber">
       <span class="shop__icon iconfont"
             @click="() => changeAllChecked(shopId, calculations.allChecked)"
             v-html="calculations.allChecked? '&#xe656;': '&#xe7ae;'"></span>
@@ -47,6 +47,9 @@ export default {
 
     const { changeCartItemInfo, getProductCartCount, productList, calculations } = useCommonCartEffect(shopId.value)
 
+    const productListKeys = Object.keys(productList.value)
+    const productNumber = productListKeys.length
+
     const changeCartItemChecked = (shopId, productId) => {
       store.commit('changeCartItemChecked', { shopId, productId })
     }
@@ -60,7 +63,8 @@ export default {
       changeCartItemInfo,
       getProductCartCount,
       productList,
-      calculations
+      calculations,
+      productNumber
     }
   }
 }

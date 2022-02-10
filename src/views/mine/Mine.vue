@@ -11,21 +11,11 @@
         <div class="user__info__id">ID: 20201009</div>
         <div class="user__info__line"></div>
         <div class="user__content">
-          <div class="user__content__item">
-            <div class="user__content__title">红包</div>
-            <div class="user__content__num">218</div>
-          </div>
-          <div class="user__content__item">
-            <div class="user__content__title">优惠券</div>
-            <div class="user__content__num">12张</div>
-          </div>
-          <div class="user__content__item">
-            <div class="user__content__title">鲜豆</div>
-            <div class="user__content__num">88</div>
-          </div>
-          <div class="user__content__item">
-            <div class="user__content__title">白条</div>
-            <div class="user__content__num">1000</div>
+          <div class="user__content__item"
+               v-for="item in TAB_LIST"
+               :key="item.id">
+            <div class="user__content__title">{{item.tag}}</div>
+            <div class="user__content__num">{{item.num}}</div>
           </div>
         </div>
       </div>
@@ -36,11 +26,11 @@
         <div class="card__item__text">我的钱包</div>
         <div class="card__item__go iconfont">&#xe6a3;</div>
       </div>
-      <div class="card__item">
+      <div class="card__item"
+           @click="handleGoClick">
         <div class="card__item__icon card__item__icon__2 iconfont">&#xe65e;</div>
         <div class="card__item__text">我的地址</div>
-        <div class="card__item__go iconfont"
-             @click="handleGoClick">&#xe6a3;</div>
+        <div class="card__item__go iconfont">&#xe6a3;</div>
       </div>
       <div class="card__item">
         <div class="card__item__icon card__item__icon__3 iconfont">&#xe740;</div>
@@ -56,6 +46,13 @@
 import Docker from '@/components/Docker.vue'
 import { useRouter } from 'vue-router'
 
+const TAB_LIST = [
+  { id: 1, tag: '红包', num: '218' },
+  { id: 2, tag: '优惠券', num: '12张' },
+  { id: 3, tag: '鲜豆', num: '88' },
+  { id: 4, tag: '白条', num: '1000' }
+]
+
 export default {
   name: 'Mine',
   components: { Docker },
@@ -64,7 +61,7 @@ export default {
     const handleGoClick = () => {
       router.push({ name: 'AddressManage' })
     }
-    return { handleGoClick }
+    return { TAB_LIST, handleGoClick }
   }
 }
 </script>

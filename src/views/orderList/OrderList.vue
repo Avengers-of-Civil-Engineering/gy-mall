@@ -56,7 +56,7 @@ const useGetOrderListEffect = () => {
             totalPrice += (productItem?.quantity * productItem?.price || 0)
           })
           order.totalNumber = totalNumber
-          order.totalPrice = totalPrice
+          order.totalPrice = totalPrice.toFixed(2)
         })
         data.list = orderList
       }

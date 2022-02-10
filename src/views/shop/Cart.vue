@@ -1,7 +1,7 @@
 <template>
   <div class="mask"
        v-show="showCartInfo && calculations.total > 0"
-       @click="handleToggleCart"></div>
+       @click.stop="handleToggleCart"></div>
   <div class="cart">
     <div class="product"
          v-show="showCartInfo && calculations.total > 0">

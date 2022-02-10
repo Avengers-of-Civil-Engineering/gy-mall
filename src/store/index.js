@@ -31,6 +31,7 @@ export default createStore({
     searchHistory: getLocalSearchHistory()
   },
   mutations: {
+    // 增删单个商品数量
     changeCartItemInfo (state, payload) {
       const { shopId, productId, productInfo, num } = payload
       const shopInfo = state.cartList?.[shopId] || { shopName: '', productList: {} }
@@ -94,10 +95,26 @@ export default createStore({
       }
       setLocalStorage(state)
     },
+    // 清空指定商铺的购物车
     cleanCart (state, payload) {
       const { shopId } = payload
       // console.log('shopId', shopId)
       state.cartList[shopId].productList = {}
+      setLocalStorage(state)
+    },
+    // 删除已结算的购物车商品
+    cleanCartOfChecked (state) {
+      const cartList = state.cartList
+      for (const i in cartList) {
+        const productList = cartList[i]?.productList
+        for (const j in productList) {
+          const product = productList[j]
+          if (product.check) {
+            delete productList[j]
+          }
+        }
+      }
+      state.cartList = cartList
       setLocalStorage(state)
     },
     changeCartItemChecked (state, payload) {

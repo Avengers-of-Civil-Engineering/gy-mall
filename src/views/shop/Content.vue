@@ -24,10 +24,10 @@
         </div>
         <div class="product__item__number">
           <span class="product__item__number__minus iconfont"
-                @click="() => {changeCartItem(shopId, item.id, item, -1, shopName)}">&#xe780;</span>
+                @click.stop="() => {changeCartItem(shopId, item.id, item, -1, shopName)}">&#xe780;</span>
           <span class="product__item__number__num">{{getProductCartCount(shopId, item.id)}}</span>
           <span class="product__item__number__plus iconfont"
-                @click="() => {changeCartItem(shopId, item.id, item, 1, shopName)}">&#xe653;</span>
+                @click.stop="() => {changeCartItem(shopId, item.id, item, 1, shopName)}">&#xe653;</span>
         </div>
       </div>
     </div>

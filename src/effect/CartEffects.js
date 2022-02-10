@@ -41,7 +41,9 @@ const useCommonCartEffect = (shopId) => {
   const calculations = computed(() => {
     const productList = cartList?.[shopId]?.productList || {}
     const result = { total: 0, totalPrice: 0, allChecked: true }
-    if (productList) {
+    if (Object.keys(productList).length === 0) {
+      result.allChecked = false
+    } else {
       for (const i in productList) {
         const product = productList[i]
         result.total += product?.count

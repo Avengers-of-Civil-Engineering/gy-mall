@@ -23,17 +23,9 @@
     <div class="category">
       <h3 class="category__title">热门搜索</h3>
       <div class="category__items">
-        <!-- <span v-for="item in hotSearchList"
+        <span v-for="item in HOT_SEARCH"
               :key="item"
-              class="category__item">{{item}}</span> -->
-        <span class="category__item">尖椒肉丝</span>
-        <span class="category__item">鲜花</span>
-        <span class="category__item">山姆会员店</span>
-        <span class="category__item">新鲜水果</span>
-        <span class="category__item">生日鲜花</span>
-        <span class="category__item">香槟玫瑰</span>
-        <span class="category__item">酸奶</span>
-        <span class="category__item">牛奶</span>
+              class="category__item">{{item}}</span>
       </div>
     </div>
   </div>
@@ -62,13 +54,15 @@ const useSearchHistoryEffect = () => {
   return { historyList, handleSearchEnter, handleClearHistory }
 }
 
+const HOT_SEARCH = ['尖椒肉丝', '鲜花', '山姆会员店', '新鲜水果', '生日鲜花', '香槟玫瑰', '酸奶', '牛奶']
+
 export default {
   name: 'Search',
   components: { SearchBar },
   setup () {
     const { historyList, handleSearchEnter, handleClearHistory } = useSearchHistoryEffect()
     const { handleBack } = useBackRouterEffect()
-    return { historyList, handleSearchEnter, handleClearHistory, handleBack }
+    return { historyList, handleSearchEnter, handleClearHistory, handleBack, HOT_SEARCH }
   }
 }
 </script>
