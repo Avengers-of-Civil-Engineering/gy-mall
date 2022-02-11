@@ -35,7 +35,8 @@ export default createStore({
     changeCartItemInfo (state, payload) {
       const { shopId, productId, productInfo, num } = payload
       const shopInfo = state.cartList?.[shopId] || { shopName: '', productList: {} }
-      let product = shopInfo?.productList?.[productId]
+      const productList = shopInfo?.productList
+      let product = productList?.[productId]
       if (!product) {
         productInfo.count = 0
         product = productInfo
@@ -45,10 +46,13 @@ export default createStore({
         product.check = true
       }
       // console.log('product', product)
-      if (product.count < 0) {
-        product.count = 0
+      productList[productId] = product
+
+      if (product.count === 0) {
+        // product.count = 0
+        delete productList[productId]
       }
-      shopInfo.productList[productId] = product
+      shopInfo.productList = productList
       state.cartList[shopId] = shopInfo
       setLocalStorage(state)
     },

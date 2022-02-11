@@ -50,7 +50,7 @@ const useCommonCartEffect = (shopId) => {
         if (product.check) {
           result.totalPrice += product?.count * product?.price
         }
-        if (product.count > 0 && !product?.check) {
+        if ((product.count > 0 && !product?.check) || result.total === 0) {
           result.allChecked = false
         }
       }
