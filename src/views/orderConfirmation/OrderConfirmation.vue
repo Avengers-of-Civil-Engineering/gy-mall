@@ -11,7 +11,7 @@
 <script>
 import { useRoute } from 'vue-router'
 import TopArea from './TopArea.vue'
-import OrderConfirmProducts from '@/components/OrderConfirmProducts.vue'
+import OrderConfirmProducts from './OrderConfirmProducts.vue'
 import Order from './Order.vue'
 
 export default {

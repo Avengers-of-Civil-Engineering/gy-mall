@@ -13,7 +13,7 @@
 
 <script>
 import TopArea from './TopArea.vue'
-import OrderConfirmProducts from '@/components/OrderConfirmProducts.vue'
+import OrderConfirmProducts from './OrderConfirmProducts.vue'
 import Order from './Order.vue'
 import useCommonCartEffect from '@/effect/CartEffects.js'
 

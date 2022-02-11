@@ -6,11 +6,14 @@
          v-for="(item, index) in list"
          :key="index">
       <div class="order__title">
-        <!-- TODO: 缺订单商铺名 -->
-        {{item?.merchant?.name}}
+        <span @click="() => handleToShopPage(item?.merchant?.id)">
+          <span class="order__title__shop">{{item?.merchant?.name}}</span>
+          <span class="order__title__to iconfont">&#xe6a3;</span>
+        </span>
         <span class="order__status">{{item?.status_txt}}</span>
       </div>
-      <div class="order__content">
+      <div class="order__content"
+           @click="() => handleToOrderInfo(item.id)">
         <div class="order__content__imgs">
           <template v-for="(innerItem, innerIndex) in item?.items"
                     :key="innerIndex">
@@ -35,6 +38,7 @@ import { reactive, toRefs } from 'vue'
 import { get } from '@/utils/request.js'
 import Head from '@/components/Head.vue'
 import Docker from '@/components/Docker.vue'
+import { useRouter } from 'vue-router'
 
 // 处理请求订单信息的逻辑
 const useGetOrderListEffect = () => {
@@ -74,10 +78,21 @@ export default {
   name: 'OrderList',
   components: { Head, Docker },
   setup () {
+    const router = useRouter()
+
     const { list, getOrderList } = useGetOrderListEffect()
     getOrderList()
 
-    return { list, getOrderList }
+    const handleToShopPage = (shopId) => {
+      // console.log('shopId', shopId)
+      router.push({ path: `/merchants/${shopId}` })
+    }
+
+    const handleToOrderInfo = (orderId) => {
+      console.log('orderId', orderId)
+      router.push({ path: `/orderInfo/${orderId}` })
+    }
+    return { list, getOrderList, handleToShopPage, handleToOrderInfo }
   }
 }
 </script>
@@ -106,6 +121,9 @@ export default {
     font-size: 0.16rem;
     text-align: left;
     color: $content-fontcolor;
+    &__to {
+      margin-left: 0.05rem;
+    }
   }
   &__status {
     float: right;

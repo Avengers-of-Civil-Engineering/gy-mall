@@ -5,7 +5,10 @@
       <span class="shop__icon iconfont"
             @click="() => changeAllChecked(shopId, calculations.allChecked)"
             v-html="calculations.allChecked? '&#xe656;': '&#xe7ae;'"></span>
-      {{shopName}}
+      <span @click="() => handleToShopPage(shopId)">
+        <span class="shop__name">{{shopName}}</span>
+        <span class="iconfont">&#xe6a3;</span>
+      </span>
     </div>
     <div class="shop__item"
          v-for="item in productList"
@@ -13,7 +16,7 @@
       <div class="shop__item__checked iconfont"
            @click="() => changeCartItemChecked(shopId, item.id)"
            v-html="item.check ? '&#xe656;' : '&#xe7ae;'"></div>
-      <img :src="item.img.img"
+      <img :src="item?.img?.img || item?.product_img?.img"
            class="shop__item__img">
       <div class="shop__item__details">
         <h4 class="shop__item__title">{{item.name}}</h4>
@@ -34,27 +37,36 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import useCommonCartEffect from '@/effect/CartEffects.js'
+import { useRouter } from 'vue-router'
 
 export default {
   name: 'CartProductInfo',
   props: ['shopId', 'shopName'],
   setup (props) {
+    const router = useRouter()
     const store = useStore()
     const shopId = ref(props.shopId)
 
     const { changeCartItemInfo, getProductCartCount, productList, calculations } = useCommonCartEffect(shopId.value)
 
-    const productListKeys = Object.keys(productList.value)
-    const productNumber = productListKeys.length
+    const productNumber = computed(() => {
+      const productListKeys = Object.keys(productList.value)
+      return productListKeys.length
+    })
 
     const changeCartItemChecked = (shopId, productId) => {
       store.commit('changeCartItemChecked', { shopId, productId })
     }
     const changeAllChecked = (shopId, isAllChecked) => {
       store.commit('changeAllChecked', { shopId, isAllChecked })
+    }
+
+    const handleToShopPage = (shopId) => {
+      // console.log('shopId', shopId)
+      router.push({ path: `/merchants/${shopId}` })
     }
 
     return {
@@ -64,7 +76,8 @@ export default {
       getProductCartCount,
       productList,
       calculations,
-      productNumber
+      productNumber,
+      handleToShopPage
     }
   }
 }
@@ -88,7 +101,12 @@ export default {
     font-size: 0.16rem;
     color: $content-fontcolor;
   }
+  &__name {
+    margin-right: 0.05rem;
+  }
   &__icon {
+    position: relative;
+    top: 0.02rem;
     margin-right: 0.06rem;
     font-size: 0.2rem;
     color: $btn-bgColor;
