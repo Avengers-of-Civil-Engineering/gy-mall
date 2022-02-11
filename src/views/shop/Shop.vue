@@ -16,7 +16,7 @@
 <script>
 import { reactive, toRefs } from 'vue'
 import { useRoute } from 'vue-router'
-import { get } from '@/utils/request.js'
+import { getShopInfo } from '@/utils/shop.js'
 import ShopInfo from '@/components/ShopInfo.vue'
 import Content from './Content.vue'
 import Cart from './Cart.vue'
@@ -32,7 +32,7 @@ const useShopInfoEffect = () => {
   })
   const getItemData = async () => {
     try {
-      const result = await get(`/api/v1/merchants/${shopId}`)
+      const result = await getShopInfo(shopId)
       // console.log(result)
       if (result) {
         data.item = result

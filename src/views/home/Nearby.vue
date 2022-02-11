@@ -11,7 +11,7 @@
 
 <script>
 import { ref } from '@vue/reactivity'
-import { get } from '@/utils/request.js'
+import { getShopInfoList } from '@/utils/shop.js'
 import ShopInfo from '@/components/ShopInfo.vue'
 
 // 获取 NearbyList 数据
@@ -19,8 +19,7 @@ const useNearbyListEffect = () => {
   const nearbyList = ref([])
   const getNearbyList = async () => {
     try {
-      // const result = await get('api/shop/hot-list')
-      const result = await get('api/v1/merchants/')
+      const result = await getShopInfoList()
       console.log(result)
       if (result?.length) {
         nearbyList.value = result

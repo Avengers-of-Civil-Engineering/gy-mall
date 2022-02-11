@@ -1,3 +1,12 @@
+import { post } from './request.js'
+
+// 登陆请求
+export const login = (userInfo) => {
+  return post('/api/v1/api-token-auth/', userInfo)
+}
+
+// 注册请求
+
 // 定义 token 有效期
 const LOGIN_VALID_SPAN = 7 * 24 * 3600 * 1000
 

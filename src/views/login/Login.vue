@@ -26,7 +26,7 @@
 <script>
 import { reactive, toRefs } from 'vue'
 import { useRouter } from 'vue-router'
-import { post } from '@/utils/request.js'
+import { login } from '@/utils/auth.js'
 import Toast, { useToastEffect } from '@/components/Toast.vue'
 
 // 处理登陆逻辑
@@ -40,7 +40,7 @@ const useLoginEffect = (showToast) => {
     const { username, password } = data
     if (username !== '' && password !== '') {
       try {
-        const result = await post('/api/v1/api-token-auth/', {
+        const result = await login({
           username: username,
           password: password
         })

@@ -18,7 +18,7 @@
 <script>
 import { reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { get, patch, post } from '@/utils/request.js'
+import { getAddressInfo, editAddress, newAddress } from '@/utils/address.js'
 
 // 获取要编辑的地址详情
 const useGetEditAddressEffect = (formData) => {
@@ -27,7 +27,8 @@ const useGetEditAddressEffect = (formData) => {
 
   const getEditAddress = async () => {
     try {
-      const result = await get(`/api/v1/addresses/${addressId}/`)
+      // const result = await get(`/api/v1/addresses/${addressId}/`)
+      const result = await getAddressInfo(addressId)
       // console.log('result', result)
       if (result) {
         formData[0].value = result.address_full_txt
@@ -45,7 +46,7 @@ const useGetEditAddressEffect = (formData) => {
   // 提交修改
   const patchEditResult = async () => {
     try {
-      const result = await patch(`/api/v1/addresses/${addressId}/`, {
+      const result = await editAddress(addressId, {
         address_full_txt: formData[0].value,
         name: formData[3].value,
         phone_number: formData[4].value
@@ -59,7 +60,7 @@ const useGetEditAddressEffect = (formData) => {
   // 提交新建收货地址
   const postNewAddress = async () => {
     try {
-      const result = await post('/api/v1/addresses/', {
+      const result = await newAddress({
         address_full_txt: formData[0].value,
         name: formData[3].value,
         phone_number: formData[4].value
@@ -87,11 +88,11 @@ export default {
     ])
     const { patchEditResult, postNewAddress } = useGetEditAddressEffect(formData)
 
-    const handleSave = () => {
+    const handleSave = async () => {
       if (props.msg === 'edit') {
-        patchEditResult()
+        await patchEditResult()
       } else {
-        postNewAddress()
+        await postNewAddress()
       }
       router.back()
     }
