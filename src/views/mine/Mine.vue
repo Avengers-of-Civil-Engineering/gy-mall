@@ -4,11 +4,17 @@
       <div class="top__edit iconfont">&#xe631;</div>
     </div>
     <div class="user">
-      <img src="./badBear.png"
-           class="user__img">
+      <input type="file"
+             id="file"
+             accept="image/*"
+             @change="changePicture($event)"
+             class="user__img__file">
+      <img :src="userInfo?.avatar?.img"
+           class="user__img"
+           @click="callFile">
       <div class="user__info">
-        <h1 class="user__info__name">小浣熊</h1>
-        <div class="user__info__id">ID: 20201009</div>
+        <h1 class="user__info__name">{{userInfo.first_name}}</h1>
+        <div class="user__info__id">ID: {{userInfo.id}}</div>
         <div class="user__info__line"></div>
         <div class="user__content">
           <div class="user__content__item"
@@ -43,20 +49,12 @@
 </template>
 
 <script>
-// import { reactive } from 'vue'
+// import { computed, reactive, toRefs, watchEffect } from 'vue'
+import { reactive, toRefs, watchEffect } from 'vue'
 import Docker from '@/components/Docker.vue'
 import { useRouter } from 'vue-router'
-
-// // 获取用户信息
-// const useUserInfoEffect = () => {
-//   const data = reactive({
-//     userInfo: {}
-//   })
-//   const getUserInfo = async () => {
-//     const result = await
-//   }
-//   return {}
-// }
+// import { getUserAuth } from '@/utils/auth.js'
+import { uploadImage, changeUserImg, getUserInfo } from '@/utils/user.js'
 
 const TAB_LIST = [
   { id: 1, tag: '红包', num: '218' },
@@ -65,15 +63,75 @@ const TAB_LIST = [
   { id: 4, tag: '白条', num: '1000' }
 ]
 
+// 处理修改用户头像
+const useChangeUserImgEffect = () => {
+  const data = reactive({
+    userInfo: {}
+  })
+  // 将图片点击转移到 input 以上传图片文件
+  const callFile = () => {
+    const fileDom = document.querySelector('#file')
+    fileDom.click()
+  }
+  // 获取用户信息
+  const getUser = async () => {
+    try {
+      const result = await getUserInfo()
+      if (result) {
+        data.userInfo = result
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }
+  // 修改用户头像
+  const changePicture = async (e) => {
+    // console.log(e.target.files)
+    const imgFile = e.target.files[0]
+
+    // 将单个图片对象放到 FormData 中。使用 FormData 的 append 方法。
+    const formData = new FormData()
+    formData.append('desc', 'test')
+    formData.append('img', imgFile)
+    try {
+      const result = await uploadImage(formData)
+      // console.log('result', result)
+      const result2 = await changeUserImg(data.userInfo?.username, result.id)
+      console.log('result2', result2)
+      if (result2) {
+        data.userInfo = result2
+        updateLocalAuthInfo(result2)
+      }
+      // await getUser()
+    } catch (e) {
+      console.log(e)
+    }
+  }
+  // 更新本地(localStorage)用户信息
+  const updateLocalAuthInfo = (data) => {
+    const oldAuthInfo = localStorage.getItem('authInfo')
+    const authInfo = JSON.parse(oldAuthInfo)
+    authInfo.userInfo = data
+    const newAuthInfo = JSON.stringify(authInfo)
+    localStorage.setItem('authInfo', newAuthInfo)
+  }
+  watchEffect(() => getUser())
+  const { userInfo } = toRefs(data)
+  return { userInfo, callFile, changePicture }
+}
+
 export default {
   name: 'Mine',
   components: { Docker },
   setup () {
     const router = useRouter()
+
+    const { userInfo, callFile, changePicture } = useChangeUserImgEffect()
+
     const handleGoClick = () => {
       router.push({ name: 'AddressManage' })
     }
-    return { TAB_LIST, handleGoClick }
+    return { userInfo, TAB_LIST, handleGoClick, callFile, changePicture }
   }
 }
 </script>
@@ -124,6 +182,10 @@ export default {
     top: -20%;
     left: 50%;
     transform: translateX(-50%);
+    background: $bg-color;
+    &__file {
+      display: none;
+    }
   }
   &__info {
     padding-top: 0.59rem;

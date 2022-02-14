@@ -49,6 +49,7 @@ const useLoginEffect = (showToast) => {
           // 将用户信息存储到本地
           localStorage.authInfo = JSON.stringify({
             token: result.token,
+            userInfo: result.user,
             loginAt: Date.now()
           })
           router.push({ name: 'Home' })
