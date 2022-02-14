@@ -3,8 +3,9 @@
     <div class="search">
       <div class="search__input">
       </div>
-      <SearchBar msg="尖椒肉丝"
-                 @search="handleSearchEnter" />
+      <SearchBar :msg="HOT_SEARCH[0]"
+                 v-model:searchKey="searchKey"
+                 @searchResult="handleSearchEnter" />
       <div class="search__cancel"
            @click="handleBack">取消</div>
     </div>
@@ -17,7 +18,8 @@
       <div class="category__items">
         <span v-for="item in historyList"
               :key="item"
-              class="category__item">{{item}}</span>
+              class="category__item"
+              @click="() => handleSelectClick(item)">{{item}}</span>
       </div>
     </div>
     <div class="category">
@@ -25,14 +27,15 @@
       <div class="category__items">
         <span v-for="item in HOT_SEARCH"
               :key="item"
-              class="category__item">{{item}}</span>
+              class="category__item"
+              @click="() => handleSelectClick(item)">{{item}}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import SearchBar from '@/components/SearchBar.vue'
@@ -43,26 +46,44 @@ const useSearchHistoryEffect = () => {
   const store = useStore()
   const router = useRouter()
   const historyList = computed(() => store.state.searchHistory)
-  const handleSearchEnter = (inputValue) => {
+
+  const searchKey = ref('')
+
+  // 点击‘搜索历史’或者‘热门搜索’直接进行搜索
+  const handleSelectClick = (inputValue) => {
+    searchKey.value = inputValue
+    // console.log('searchKey', searchKey.value)
+
     store.commit('addToSearchHistory', { inputValue })
     router.push({ name: 'SearchResult' })
   }
+
+  // 输入搜索内容，回车执行搜索
+  const handleSearchEnter = () => {
+    const inputValue = searchKey.value
+    console.log('inputvalue', inputValue)
+    store.commit('addToSearchHistory', { inputValue })
+    router.push({ name: 'SearchResult' })
+  }
+
+  // 清除搜索历史记录
   const handleClearHistory = () => {
     store.commit('clearSearchHistory')
   }
 
-  return { historyList, handleSearchEnter, handleClearHistory }
+  return { searchKey, historyList, handleSelectClick, handleSearchEnter, handleClearHistory }
 }
 
-const HOT_SEARCH = ['尖椒肉丝', '鲜花', '山姆会员店', '新鲜水果', '生日鲜花', '香槟玫瑰', '酸奶', '牛奶']
+const HOT_SEARCH = ['游戏机', '鲜花', '沃尔玛', '车厘子', '螺蛳粉', '玫瑰', '酸奶', '牛奶']
 
 export default {
   name: 'Search',
   components: { SearchBar },
   setup () {
-    const { historyList, handleSearchEnter, handleClearHistory } = useSearchHistoryEffect()
+    // const { searchKey, handleSelectClick } = useSearchKeyEffect()
+    const { searchKey, historyList, handleSelectClick, handleSearchEnter, handleClearHistory } = useSearchHistoryEffect()
     const { handleBack } = useBackRouterEffect()
-    return { historyList, handleSearchEnter, handleClearHistory, handleBack, HOT_SEARCH }
+    return { historyList, handleSearchEnter, handleClearHistory, handleBack, HOT_SEARCH, searchKey, handleSelectClick }
   }
 }
 </script>

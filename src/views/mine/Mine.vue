@@ -43,8 +43,20 @@
 </template>
 
 <script>
+// import { reactive } from 'vue'
 import Docker from '@/components/Docker.vue'
 import { useRouter } from 'vue-router'
+
+// // 获取用户信息
+// const useUserInfoEffect = () => {
+//   const data = reactive({
+//     userInfo: {}
+//   })
+//   const getUserInfo = async () => {
+//     const result = await
+//   }
+//   return {}
+// }
 
 const TAB_LIST = [
   { id: 1, tag: '红包', num: '218' },

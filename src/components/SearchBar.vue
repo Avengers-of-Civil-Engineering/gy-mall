@@ -3,15 +3,15 @@
     <span class="iconfont">&#xe6a0;</span>
     <input type="text"
            :placeholder="msg"
-           v-model="inputValue"
+           :value="searchKey"
+           @input="$emit('update:searchKey', $event.target.value)"
            class="input__text"
-           @click="toSearch"
-           @keyup.enter="search">
+           @click="toSearchPage"
+           @keyup.enter="toSearchResultPage">
   </div>
 </template>
 
 <script>
-import { ref } from 'vue'
 
 export default {
   name: 'SearchBar',
@@ -21,18 +21,23 @@ export default {
       default () {
         return '搜索内容'
       }
+    },
+    searchKey: {
+      type: String
     }
   },
-  emits: ['toSearch', 'search'],
+  emits: ['toSearch', 'searchResult', 'update:searchKey'],
   setup (props, { emit }) {
-    const inputValue = ref('')
-    const toSearch = () => {
+    // 点击跳转到搜索页
+    const toSearchPage = () => {
       emit('toSearch')
     }
-    const search = () => {
-      emit('search', inputValue.value)
+    // 回车执行搜索功能
+    const toSearchResultPage = () => {
+      emit('searchResult')
     }
-    return { inputValue, toSearch, search }
+
+    return { toSearchPage, toSearchResultPage }
   }
 }
 </script>

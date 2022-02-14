@@ -2,7 +2,16 @@
   <div class="wrapper">
     <img src="http://www.dell-lee.com/imgs/vue3/user.png"
          class="wrapper__img" />
-    <div class="wrapper__input">
+    <div class="wrapper__input"
+         v-for="item in registerData"
+         :key="item.id">
+      <input type="text"
+             v-model="item.value"
+             class="wrapper__input__content"
+             :placeholder="item.placeholder"
+             required>
+    </div>
+    <!-- <div class="wrapper__input">
       <input type="text"
              v-model="username"
              class="wrapper__input__content"
@@ -19,7 +28,7 @@
              v-model="ensurment"
              class="wrapper__input__content"
              placeholder="请确认密码">
-    </div>
+    </div> -->
     <div class="wrapper__register-btn"
          @click="handleRegister">注册</div>
     <div class="wrapper__login-link"
@@ -30,47 +39,70 @@
 </template>
 
 <script>
-import { reactive, toRefs } from 'vue'
+import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { post } from '@/utils/request.js'
+import { register } from '@/utils/auth.js'
 import Toast, { useToastEffect } from '@/components/Toast.vue'
 
 // 处理登陆逻辑
 const useRegisterEffect = (showToast) => {
   const router = useRouter()
-  const data = reactive({
-    username: '',
-    password: '',
-    ensurment: ''
-  })
+  const registerData = reactive(
+    [
+      { id: 1, placeholder: '请输入用户名', value: '' },
+      { id: 2, placeholder: '请输入邮箱', value: '' },
+      { id: 3, placeholder: '请输入姓名', value: '' },
+      { id: 4, placeholder: '请输入手机号', value: '' },
+      { id: 5, placeholder: '请输入密码', value: '' },
+      { id: 6, placeholder: '请确认密码', value: '' }
+    ]
+    // {
+    //   username: '',
+    //   email: '',
+    //   firstName: '',
+    //   phoneNumber: '',
+    //   password: '',
+    //   ensurment: ''
+    // }
+  )
   const handleRegister = async () => {
-    const { username, password, ensurment } = data
-    if (username !== '' && password !== '' && ensurment !== '') {
-      if (ensurment === password) {
-        try {
-          const result = await post('/api/user/register', {
-            username: username,
-            password: password,
-            ensurment: ensurment
-          })
-          // console.log(result)
-          if (result.errno === 0) {
-            router.push({ name: 'Login' })
-          } else {
-            showToast('注册失败')
-          }
-        } catch (e) {
-          showToast('请求失败')
+    if (registerData[5].value === registerData[4].value) {
+      try {
+        const result = await register({
+          username: registerData[0].value,
+          email: registerData[1].value,
+          first_name: registerData[2].value,
+          phone_number: registerData[3].value,
+          password: registerData[4].value
+        })
+        console.log(result)
+        if (result) {
+          router.push({ name: 'Login' })
+        } else {
+          showToast('注册失败')
         }
-      } else {
-        showToast('密码不一致')
+      } catch (error) {
+        // axios 错误处理(Handling Errors)
+        if (error.response) {
+          // 请求成功发出且服务器也响应了状态码，但状态代码超出了 2xx 的范围
+          console.log(error.response.status)
+          showToast('请求失败: 用户名或邮箱不符合要求')
+        } else if (error.request) {
+          // 请求已经成功发起，但没有收到响应
+          // console.log('Error-request', error.request)
+          showToast('请求失败: 未响应')
+        } else {
+          // 发送请求时出了点问题
+          console.log('Error-message', error.message)
+          showToast('发送请求失败')
+        }
       }
     } else {
-      showToast('账号密码不能为空')
+      showToast('密码不一致')
     }
   }
-  const { username, password, ensurment } = toRefs(data)
-  return { username, password, ensurment, handleRegister }
+  // const { username, password, ensurment } = toRefs(data)
+  return { registerData, handleRegister }
 }
 
 // 处理去注册逻辑
@@ -90,13 +122,11 @@ export default {
   },
   setup () {
     const { show, toastMessage, showToast } = useToastEffect()
-    const { username, password, ensurment, handleRegister } = useRegisterEffect(showToast)
+    const { registerData, handleRegister } = useRegisterEffect(showToast)
     const { handleToLogin } = useToLoginEffect()
 
     return {
-      username,
-      password,
-      ensurment,
+      registerData,
       handleRegister,
       handleToLogin,
       show,

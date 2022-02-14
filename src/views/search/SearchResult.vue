@@ -2,52 +2,125 @@
   <div class="wrapper">
     <div class="search">
       <Back />
-      <SearchBar :msg="msg" />
+      <SearchBar :msg="msg"
+                 v-model:searchKey="searchKey"
+                 @searchResult="handleSearchEnter" />
+    </div>
+    <div class="category">
+      <span v-for="item in SEARCH_CATEGOTIES"
+            :key="item.tab"
+            :class="{'category__item':true, 'category__item--active': item.tab === currentTab }"
+            @click="() => handleSelectTab(item.tab)">
+        {{item.name}}</span>
     </div>
     <div class="result">
-      <router-link :to="`/merchants/${item.id}`"
-                   v-for="item in searchResultList"
-                   :key="item._id">
-        <ShopInfo :item="item" />
-      </router-link>
+      <div class="result__merchants"
+           v-if="searchResultList.products?.length === 0">
+        <router-link :to="`/merchants/${item.id}`"
+                     v-for="item in searchResultList?.merchants"
+                     :key="item.id">
+          <ShopInfo :item="item" />
+        </router-link>
+      </div>
+      <div class="result__products"
+           v-if="searchResultList.merchants?.length === 0">
+        <div class="result__products__item"
+             v-for="item in searchResultList?.products"
+             :key="item.id">
+          <img class="result__products__img"
+               :src="item?.img?.img">
+          <p class="result__products__name">{{item.name}}</p>
+          <div class="result__products__info">
+            <span class="result__products__price">&yen;{{item.price}}</span>
+            <span class="result__products__sales">月销{{item.sales}}笔</span>
+          </div>
+          <div class="result__products__merchant">
+            <span class="result__products__shop">{{item?.merchant?.name}}</span>
+            <span class="result__products__icon iconfont">&#xe6a3;</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { ref, computed, reactive, toRefs, watchEffect } from 'vue'
 import { useStore } from 'vuex'
-import { get } from '@/utils/request.js'
+import { useRouter } from 'vue-router'
+import { getSearchInfo } from '@/utils/search.js'
 import Back from '@/components/Back.vue'
 import SearchBar from '@/components/SearchBar.vue'
 import ShopInfo from '@/components/ShopInfo.vue'
 
+// 搜索种类
+const SEARCH_CATEGOTIES = [
+  { tab: 'all', name: '全部' },
+  { tab: 'product', name: '商品' },
+  { tab: 'merchant', name: '商铺' }
+]
+
 // 获取 searchResultList 数据
-const useSearchResultListEffect = () => {
-  const searchResultList = ref([])
-  const getSearchResultList = async () => {
+const useSearchResultEffect = (currentTab) => {
+  const store = useStore()
+  const msg = computed(() => store.state.searchHistory[0])
+
+  const searchData = reactive({
+    searchResultList: {}
+  })
+  const getSearchResult = async () => {
     try {
-      const result = await get('api/v1/merchants')
-      // console.log(result)
+      const result = await getSearchInfo({
+        s: msg.value,
+        type: currentTab.value
+      })
+      console.log(result)
       if (result) {
-        searchResultList.value = result
+        searchData.searchResultList = result
       }
     } catch (err) {
       console.log('请求失败')
     }
   }
-  return { searchResultList, getSearchResultList }
+  watchEffect(() => getSearchResult())
+  // getSearchResult()
+  const { searchResultList } = toRefs(searchData)
+  return { msg, searchResultList, getSearchResult }
+}
+
+// 处理切换 Tab
+const useTabEffect = () => {
+  const currentTab = ref('all')
+
+  const handleSelectTab = (tab) => {
+    currentTab.value = tab
+  }
+  return { currentTab, handleSelectTab }
+}
+
+const useSearchEffect = () => {
+  const store = useStore()
+  const router = useRouter()
+  const searchKey = ref('')
+
+  // 输入搜索内容，回车执行搜索
+  const handleSearchEnter = () => {
+    const inputValue = searchKey.value
+    console.log('inputvalue', inputValue)
+    store.commit('addToSearchHistory', { inputValue })
+    router.go(0)
+  }
+  return { searchKey, handleSearchEnter }
 }
 
 export default {
   name: 'SearchResult',
   components: { Back, SearchBar, ShopInfo },
   setup () {
-    const store = useStore()
-    const msg = computed(() => store.state.searchHistory[0])
-    const { searchResultList, getSearchResultList } = useSearchResultListEffect()
-    getSearchResultList()
-    return { msg, searchResultList, getSearchResultList }
+    const { searchKey, handleSearchEnter } = useSearchEffect()
+    const { currentTab, handleSelectTab } = useTabEffect()
+    const { msg, searchResultList } = useSearchResultEffect(currentTab)
+    return { SEARCH_CATEGOTIES, searchKey, handleSearchEnter, currentTab, handleSelectTab, msg, searchResultList }
   }
 }
 </script>
@@ -70,9 +143,52 @@ export default {
   position: relative;
   line-height: 0.32rem;
 }
+.category {
+  position: relative;
+  margin: 0.16rem 0;
+  &__item {
+    margin-right: 0.2rem;
+    font-size: 0.14rem;
+    &--active {
+      font-weight: bold;
+      color: $hightlight-fontColor;
+    }
+  }
+}
 .result {
   a {
     text-decoration: none;
+  }
+  &__products {
+    display: flex;
+    flex-wrap: wrap;
+    &__item {
+      margin: 0.08rem;
+      width: 45%;
+      height: 60%;
+    }
+    &__img {
+      position: relative;
+      width: 1rem;
+      height: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    &__name {
+      margin: 0.08rem 0;
+      font-size: 0.14rem;
+      @include ellipsis;
+    }
+    &__price {
+      margin-right: 0.1rem;
+      font-size: 0.14rem;
+      color: $hightlight-fontColor;
+      font-weight: bold;
+    }
+    &__sales {
+      font-size: 0.12rem;
+      color: $light-fontColor;
+    }
   }
 }
 </style>
