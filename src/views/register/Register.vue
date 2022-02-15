@@ -5,30 +5,15 @@
     <div class="wrapper__input"
          v-for="item in registerData"
          :key="item.id">
-      <input type="text"
-             v-model="item.value"
-             class="wrapper__input__content"
-             :placeholder="item.placeholder"
-             required>
+      <label class="wrapper__input__label">
+        {{item.label}}
+        <input type="text"
+               v-model="item.value"
+               class="wrapper__input__content"
+               :placeholder="item.placeholder"
+               required>
+      </label>
     </div>
-    <!-- <div class="wrapper__input">
-      <input type="text"
-             v-model="username"
-             class="wrapper__input__content"
-             placeholder="请输入用户名">
-    </div>
-    <div class="wrapper__input">
-      <input type="text"
-             v-model="password"
-             class="wrapper__input__content"
-             placeholder="请输入密码">
-    </div>
-    <div class="wrapper__input">
-      <input type="text"
-             v-model="ensurment"
-             class="wrapper__input__content"
-             placeholder="请确认密码">
-    </div> -->
     <div class="wrapper__register-btn"
          @click="handleRegister">注册</div>
     <div class="wrapper__login-link"
@@ -47,24 +32,14 @@ import Toast, { useToastEffect } from '@/components/Toast.vue'
 // 处理登陆逻辑
 const useRegisterEffect = (showToast) => {
   const router = useRouter()
-  const registerData = reactive(
-    [
-      { id: 1, placeholder: '请输入用户名', value: '' },
-      { id: 2, placeholder: '请输入邮箱', value: '' },
-      { id: 3, placeholder: '请输入姓名', value: '' },
-      { id: 4, placeholder: '请输入手机号', value: '' },
-      { id: 5, placeholder: '请输入密码', value: '' },
-      { id: 6, placeholder: '请确认密码', value: '' }
-    ]
-    // {
-    //   username: '',
-    //   email: '',
-    //   firstName: '',
-    //   phoneNumber: '',
-    //   password: '',
-    //   ensurment: ''
-    // }
-  )
+  const registerData = reactive([
+    { id: 1, label: '用户名:', placeholder: '请输入用户名', value: '' },
+    { id: 2, label: '邮箱:', placeholder: '请输入邮箱', value: '' },
+    { id: 3, label: '昵称:', placeholder: '请输入昵称', value: '' },
+    { id: 4, label: '手机号:', placeholder: '请输入手机号', value: '' },
+    { id: 5, label: '密码:', placeholder: '请输入密码', value: '' },
+    { id: 6, label: '确认密码:', placeholder: '请确认密码', value: '' }
+  ])
   const handleRegister = async () => {
     if (registerData[5].value === registerData[4].value) {
       try {
@@ -85,8 +60,9 @@ const useRegisterEffect = (showToast) => {
         // axios 错误处理(Handling Errors)
         if (error.response) {
           // 请求成功发出且服务器也响应了状态码，但状态代码超出了 2xx 的范围
-          console.log(error.response.status)
-          showToast('请求失败: 用户名或邮箱不符合要求')
+          console.log('response', error.response)
+          const errorMsg = error.response?.data?.msg || error.response?.data?.username?.[0] || error.response?.data?.email?.[0]
+          showToast(`请求失败: ${errorMsg}`)
         } else if (error.request) {
           // 请求已经成功发起，但没有收到响应
           // console.log('Error-request', error.request)
@@ -159,11 +135,16 @@ export default {
     background: #f9f9f9;
     border: 0.01rem solid rgba(0, 0, 0, 0.1);
     border-radius: 6px;
+    &__label {
+      margin-top: 0.12rem;
+      line-height: 0.24rem;
+      font-size: 0.16rem;
+    }
     &__content {
+      width: 70%;
       @include formatInput;
       margin-top: 0.12rem;
       line-height: 0.24rem;
-      width: 100%;
       font-size: 0.16rem;
     }
   }

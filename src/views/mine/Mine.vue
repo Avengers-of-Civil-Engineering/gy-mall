@@ -4,14 +4,21 @@
       <div class="top__edit iconfont">&#xe631;</div>
     </div>
     <div class="user">
-      <input type="file"
-             id="file"
-             accept="image/*"
-             @change="changePicture($event)"
-             class="user__img__file">
-      <img :src="userInfo?.avatar?.img"
-           class="user__img"
-           @click="callFile">
+      <div class="user__head">
+        <input type="file"
+               id="file"
+               accept="image/*"
+               @change="changePicture($event)"
+               class="user__head__file">
+        <img src="./defaultImg.png"
+             v-if="userInfo?.avatar === null"
+             class="user__head__img"
+             @click="callFile">
+        <img :src="userInfo?.avatar?.img"
+             v-if="userInfo?.avatar"
+             class="user__head__img"
+             @click="callFile">
+      </div>
       <div class="user__info">
         <h1 class="user__info__name">{{userInfo?.first_name}}</h1>
         <div class="user__info__id">ID: {{userInfo?.id}}</div>
@@ -66,7 +73,7 @@ const TAB_LIST = [
 const useChangeUserImgEffect = () => {
   // 从本地(localStorage)获取用户信息
   const localAuthInfo = getUserAuth()
-  console.log('localAuthInfo', localAuthInfo)
+  // console.log('localAuthInfo', localAuthInfo)
 
   // 使用 localAuthInfo 初始化响应式的 userInfo，以在网络请求到数据之前展示用户信息
   const data = reactive({
@@ -103,7 +110,7 @@ const useChangeUserImgEffect = () => {
       const result = await uploadImage(formData)
       // console.log('result', result)
       const result2 = await changeUserImg(data.userInfo?.username, result.id)
-      console.log('result2', result2)
+      // console.log('result2', result2)
       if (result2) {
         data.userInfo = result2
         updateLocalAuthInfo(result2)
@@ -180,19 +187,22 @@ export default {
   box-shadow: 0 0.08rem 0.16rem 0 rgba(0, 0, 0, 0.08);
   border-radius: 0.08rem;
   background: $bg-color;
-  &__img {
-    position: absolute;
-    width: 0.94rem;
-    height: 0.94rem;
-    border-radius: 50%;
-    top: -20%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: $bg-color;
+  &__head {
+    &__img {
+      position: absolute;
+      width: 0.94rem;
+      height: 0.94rem;
+      border-radius: 50%;
+      top: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: $bg-color;
+    }
     &__file {
       display: none;
     }
   }
+
   &__info {
     padding-top: 0.59rem;
     &__name {

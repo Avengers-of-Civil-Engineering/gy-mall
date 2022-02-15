@@ -3,16 +3,22 @@
     <img src="http://www.dell-lee.com/imgs/vue3/user.png"
          class="wrapper__img" />
     <div class="wrapper__input">
-      <input type="text"
-             v-model="username"
-             class="wrapper__input__content"
-             placeholder="请输入用户名">
+      <label class="wrapper__input__label">
+        用户名:
+        <input type="text"
+               v-model="username"
+               class="wrapper__input__content"
+               placeholder="请输入用户名">
+      </label>
     </div>
     <div class="wrapper__input">
-      <input type="text"
-             v-model="password"
-             class="wrapper__input__content"
-             placeholder="请输入密码">
+      <label class="wrapper__input__label">
+        密码:
+        <input type="text"
+               v-model="password"
+               class="wrapper__input__content"
+               placeholder="请输入密码">
+      </label>
     </div>
     <div class="wrapper__login-btn"
          @click="handleLogin">登陆</div>
@@ -60,8 +66,10 @@ const useLoginEffect = (showToast) => {
         // axios 错误处理(Handling Errors)
         if (error.response) {
           // 请求成功发出且服务器也响应了状态码，但状态代码超出了 2xx 的范围
-          // console.log(error.response.status)
+          console.log('response', error.response)
+          // const errorMsg = error.response?.data?.non_field_errors
           showToast('请求失败: 用户名或密码错误')
+          // showToast(`请求失败: ${errorMsg}`)
         } else if (error.request) {
           // 请求已经成功发起，但没有收到响应
           // console.log('Error-request', error.request)
@@ -136,11 +144,16 @@ export default {
     background: #f9f9f9;
     border: 0.01rem solid rgba(0, 0, 0, 0.1);
     border-radius: 6px;
+    &__label {
+      margin-top: 0.12rem;
+      line-height: 0.24rem;
+      font-size: 0.16rem;
+    }
     &__content {
       @include formatInput;
       margin-top: 0.12rem;
       line-height: 0.24rem;
-      width: 100%;
+      width: 70%;
       font-size: 0.16rem;
     }
   }
