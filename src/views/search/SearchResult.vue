@@ -6,7 +6,8 @@
                  v-model:searchKey="searchKey"
                  @searchResult="handleSearchEnter" />
     </div>
-    <div class="category">
+    <div class="category"
+         v-if="productsList?.length !== 0 || merchantList?.length !== 0">
       <span v-for="item in SEARCH_CATEGOTIES"
             :key="item.tab"
             :class="{'category__item':true, 'category__item--active': item.tab === currentTab }"
@@ -41,10 +42,8 @@
           </div>
         </div>
       </div>
-      <div class="result__null"
-           v-if="productsList?.length === 0 && merchantList?.length == 0">
-        <h2 class="result__null__text">没有搜索到结果</h2>
-      </div>
+      <Empty v-if="productsList?.length === 0 && merchantList?.length === 0"
+             msg="抱歉，没有搜索到结果" />
     </div>
   </div>
 </template>
@@ -57,6 +56,7 @@ import { getSearchList } from '@/utils/search.js'
 import Back from '@/components/Back.vue'
 import SearchBar from '@/components/SearchBar.vue'
 import ShopInfo from '@/components/ShopInfo.vue'
+import Empty from '@/components/Empty.vue'
 
 // 搜索种类
 const SEARCH_CATEGOTIES = [
@@ -138,7 +138,7 @@ const useSearchEffect = () => {
 
 export default {
   name: 'SearchResult',
-  components: { Back, SearchBar, ShopInfo },
+  components: { Back, SearchBar, ShopInfo, Empty },
   setup () {
     const router = useRouter()
     const handleToMerchant = (shopId) => {
@@ -225,23 +225,6 @@ export default {
     &__icon {
       position: relative;
       top: 0.01rem;
-    }
-  }
-  &__null {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0.44rem;
-    bottom: 0;
-    /* background: $page-bgColor; */
-    &__text {
-      position: relative;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      font-weight: normal;
-      text-align: center;
-      color: $content-fontcolor;
     }
   }
 }

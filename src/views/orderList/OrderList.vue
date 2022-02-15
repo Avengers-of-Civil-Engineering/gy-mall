@@ -29,16 +29,19 @@
         </div>
       </div>
     </div>
+    <Empty v-if="list?.length === 0"
+           msg="您还没有创建订单哟，快去加购吧！" />
   </div>
   <Docker :currentIndex="2" />
 </template>
 
 <script>
 import { reactive, toRefs } from 'vue'
+import { useRouter } from 'vue-router'
 import { get } from '@/utils/request.js'
 import Head from '@/components/Head.vue'
 import Docker from '@/components/Docker.vue'
-import { useRouter } from 'vue-router'
+import Empty from '@/components/Empty.vue'
 
 // 处理请求订单信息的逻辑
 const useGetOrderListEffect = () => {
@@ -76,7 +79,7 @@ const useGetOrderListEffect = () => {
 
 export default {
   name: 'OrderList',
-  components: { Head, Docker },
+  components: { Head, Docker, Empty },
   setup () {
     const router = useRouter()
 
