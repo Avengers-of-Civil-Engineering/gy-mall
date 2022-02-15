@@ -13,8 +13,8 @@
            class="user__img"
            @click="callFile">
       <div class="user__info">
-        <h1 class="user__info__name">{{userInfo.first_name}}</h1>
-        <div class="user__info__id">ID: {{userInfo.id}}</div>
+        <h1 class="user__info__name">{{userInfo?.first_name}}</h1>
+        <div class="user__info__id">ID: {{userInfo?.id}}</div>
         <div class="user__info__line"></div>
         <div class="user__content">
           <div class="user__content__item"
@@ -49,11 +49,10 @@
 </template>
 
 <script>
-// import { computed, reactive, toRefs, watchEffect } from 'vue'
 import { reactive, toRefs, watchEffect } from 'vue'
 import Docker from '@/components/Docker.vue'
 import { useRouter } from 'vue-router'
-// import { getUserAuth } from '@/utils/auth.js'
+import { getUserAuth } from '@/utils/auth.js'
 import { uploadImage, changeUserImg, getUserInfo } from '@/utils/user.js'
 
 const TAB_LIST = [
@@ -65,9 +64,16 @@ const TAB_LIST = [
 
 // 处理修改用户头像
 const useChangeUserImgEffect = () => {
+  // 从本地(localStorage)获取用户信息
+  const localAuthInfo = getUserAuth()
+  console.log('localAuthInfo', localAuthInfo)
+
+  // 使用 localAuthInfo 初始化响应式的 userInfo，以在网络请求到数据之前展示用户信息
   const data = reactive({
-    userInfo: {}
+    userInfo: localAuthInfo
   })
+  // console.log('data-userInfo', data.userInfo)
+
   // 将图片点击转移到 input 以上传图片文件
   const callFile = () => {
     const fileDom = document.querySelector('#file')
