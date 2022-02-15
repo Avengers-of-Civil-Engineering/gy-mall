@@ -7,7 +7,7 @@
                 :key="item.id">
         <div class="product__item"
              v-if="index < 2 || showMore">
-          <img :src="item.img.img"
+          <img :src="item?.img?.img"
                class="product__item__img">
           <div class="product__item__details">
             <h4 class="product__item__title">{{item.name}}</h4>

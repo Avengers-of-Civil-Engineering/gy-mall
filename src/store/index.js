@@ -1,4 +1,5 @@
 import { createStore } from 'vuex'
+import { getProductInfo } from '@/utils/shop.js'
 
 const setLocalStorage = (state) => {
   const { cartList } = state
@@ -56,6 +57,27 @@ export default createStore({
       state.cartList[shopId] = shopInfo
       setLocalStorage(state)
     },
+    // 从订单中添加商品到购物车
+    addToCartFromOrder (state, payload) {
+      const { shopId, productId, productInfo } = payload
+      // console.log('shopId', shopId)
+      // console.log('productId', productId)
+      // console.log('mutations-productInfo', productInfo)
+      const shopInfo = state.cartList?.[shopId] || { shopName: '', productList: {} }
+      const productList = shopInfo?.productList
+      let product = productList?.[productId]
+      if (!product) {
+        productInfo.count = 1
+        productInfo.check = true
+        product = productInfo
+      } else {
+        product.count += 1
+      }
+      productList[productId] = product
+      shopInfo.productList = productList
+      state.cartList[shopId] = shopInfo
+      setLocalStorage(state)
+    },
     changeShopName (state, payload) {
       const { shopId, shopName } = payload
       const shopInfo = state.cartList?.[shopId] || { shopName: '', productList: {} }
@@ -104,6 +126,11 @@ export default createStore({
       const { shopId } = payload
       // console.log('shopId', shopId)
       state.cartList[shopId].productList = {}
+      setLocalStorage(state)
+    },
+    // 清空购物车所有商品
+    clearCart (state, payload) {
+      state.cartList = {}
       setLocalStorage(state)
     },
     // 删除已结算的购物车商品
@@ -156,6 +183,24 @@ export default createStore({
     }
   },
   actions: {
+    // 从订单中添加商品到购物车
+    addToCartFromOrder ({ commit }, payload) {
+      const { shopId, productId } = payload
+      const getProduct = async () => {
+        try {
+          const result = await getProductInfo(productId)
+          // console.log('action-productInfo', result)
+          return result
+        } catch (e) {
+          console.log(e)
+        }
+      }
+      // 不用将 promise 的值保存到变量，应该直接在 promise.then 内 commit mutation！！！
+      getProduct().then(productInfo => {
+        // console.log('action-productInfo-then', productInfo)
+        commit('addToCartFromOrder', { shopId, productId, productInfo })
+      })
+    }
   },
   modules: {
   }

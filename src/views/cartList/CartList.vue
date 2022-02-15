@@ -8,6 +8,8 @@
         <CartProductInfo :shopId="key"
                          :shopName="item.shopName" />
       </template>
+      <div class="clear"
+           @click="handleClearCart">清空购物车</div>
     </div>
     <div v-if="isEmpty"
          class="container">
@@ -33,33 +35,41 @@ export default {
   components: { Head, Check, Docker, CartProductInfo },
   setup () {
     const store = useStore()
-    const cartList = store.state.cartList
-    console.log('cartList', cartList)
-    const cartListKeys = Object.keys(cartList)
+    // 获取响应式的 cartList
+    const cartList = computed(() => store.state.cartList)
 
+    // 计算购物车是否为空
     const isEmpty = computed(() => {
-      let result
+      const cartList = store.state.cartList
+      // console.log('cartList', cartList)
+      const cartListKeys = Object.keys(cartList)
+
       let shopNumber = cartListKeys.length
       if (shopNumber === 0) {
-        result = true
+        return true
       } else {
         for (const i in cartList) {
           const productList = cartList[i]?.productList
           const productListKeys = Object.keys(productList)
+          // console.log('productListKeys', productListKeys)
           if (productListKeys.length === 0) {
             shopNumber -= 1
           }
-          console.log('shopNumber', shopNumber)
+          // console.log('shopNumber', shopNumber)
         }
         if (shopNumber === 0) {
-          result = true
+          return true
+        } else {
+          return false
         }
       }
-      console.log('result', result)
-
-      return result
     })
-    return { cartList, isEmpty }
+
+    // 发起清空购物车
+    const handleClearCart = () => {
+      store.commit('clearCart')
+    }
+    return { cartList, isEmpty, handleClearCart }
   }
 }
 </script>
@@ -83,6 +93,20 @@ export default {
   left: 0.18rem;
   right: 0.18rem;
   bottom: 0.16rem;
+}
+.clear {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1rem;
+  margin: 0.16rem 0;
+  padding: 0.05rem;
+  box-sizing: border-box;
+  font-size: 0.14rem;
+  text-align: center;
+  color: $bg-color;
+  background: $btn-bgcolor;
+  border-radius: 0.15rem;
 }
 .container {
   position: absolute;

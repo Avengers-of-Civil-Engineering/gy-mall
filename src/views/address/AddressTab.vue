@@ -101,6 +101,9 @@ export default {
     text-align: left;
     color: $hightlight-fontColor;
   }
+  &__content {
+    width: 100%;
+  }
   &__info {
     flex: 1;
     line-height: 0.2rem;

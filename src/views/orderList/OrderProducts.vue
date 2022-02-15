@@ -24,7 +24,9 @@
               </span>
             </p>
             <div class="product__item__add"
-                 @click="() => changeCartItem(orderInfo?.merchant_id, item?.id, item, 1, orderInfo?.merchant?.name)">加入购物车</div>
+                 @click.stop="() => addToCart(orderInfo?.merchant_id, item?.product_id, orderInfo?.merchant?.name)">
+              加入购物车
+            </div>
           </div>
         </div>
       </template>
@@ -86,34 +88,41 @@ export const useOrderInfoEffect = () => {
   return { orderInfo, orderInfoList }
 }
 
+// 从订单直接添加商品到购物车逻辑
+const useAddToCartEffect = () => {
+  const store = useStore()
+  const { show, toastMessage, showToast } = useToastEffect()
+
+  // productInfo 通过 productId 请求获得
+  const addToCartFromOrder = (shopId, productId) => {
+    store.dispatch('addToCartFromOrder', { shopId, productId })
+  }
+  const changeShopName = (shopId, shopName) => {
+    store.commit('changeShopName', { shopId, shopName })
+  }
+  const addToCart = (shopId, productId, shopName) => {
+    addToCartFromOrder(shopId, productId)
+    changeShopName(shopId, shopName)
+    showToast('商品已成功加入购物车')
+  }
+  return { show, toastMessage, addToCart }
+}
+
 export default {
   name: 'OrderProducts',
   components: { Toast },
   setup () {
     const router = useRouter()
-    const store = useStore()
 
-    const { show, toastMessage, showToast } = useToastEffect()
     const { orderInfo, orderInfoList } = useOrderInfoEffect()
 
     const handleToShopPage = (shopId) => {
       // console.log('shopId', shopId)
       router.push({ path: `/merchants/${shopId}` })
     }
+    const { show, toastMessage, addToCart } = useAddToCartEffect()
 
-    const changeCartItemInfo = (shopId, productId, productInfo, num) => {
-      store.commit('changeCartItemInfo', { shopId, productId, productInfo, num })
-    }
-    const changeShopName = (shopId, shopName) => {
-      store.commit('changeShopName', { shopId, shopName })
-    }
-    const changeCartItem = (shopId, productId, productInfo, num, shopName) => {
-      changeCartItemInfo(shopId, productId, productInfo, num)
-      changeShopName(shopId, shopName)
-      showToast('商品已成功加入购物车')
-    }
-
-    return { orderInfo, orderInfoList, handleToShopPage, changeCartItem, show, toastMessage }
+    return { orderInfo, orderInfoList, handleToShopPage, addToCart, show, toastMessage }
   }
 }
 </script>

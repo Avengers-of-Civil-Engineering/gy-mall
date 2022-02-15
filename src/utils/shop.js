@@ -19,3 +19,8 @@ export const getShopTabProducts = (shopId, tab) => {
 export const getShopInfoList = () => {
   return get('/api/v1/merchants/')
 }
+
+// 获取指定 productId 的商品信息
+export const getProductInfo = (productId) => {
+  return get(`/api/v1/products/${productId}`)
+}

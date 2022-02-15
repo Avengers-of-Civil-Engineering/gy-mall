@@ -15,17 +15,17 @@
     </div>
     <div class="result">
       <div class="result__merchants"
-           v-if="searchResultList.products?.length === 0">
-        <router-link :to="`/merchants/${item.id}`"
-                     v-for="item in searchResultList?.merchants"
-                     :key="item.id">
+           v-if="(currentTab === 'all' && productsList?.length === 0) || currentTab === 'merchant'">
+        <router-link v-for="item in merchantList"
+                     :key="item.id"
+                     :to="`/merchants/${item.id}`">
           <ShopInfo :item="item" />
         </router-link>
       </div>
       <div class="result__products"
-           v-if="searchResultList.merchants?.length === 0">
+           v-if="currentTab === 'all' || currentTab === 'product'">
         <div class="result__products__item"
-             v-for="item in searchResultList?.products"
+             v-for="item in productsList"
              :key="item.id">
           <img class="result__products__img"
                :src="item?.img?.img">
@@ -34,11 +34,16 @@
             <span class="result__products__price">&yen;{{item.price}}</span>
             <span class="result__products__sales">月销{{item.sales}}笔</span>
           </div>
-          <div class="result__products__merchant">
+          <div class="result__products__merchant"
+               @click="() => handleToMerchant(item?.merchant?.id)">
             <span class="result__products__shop">{{item?.merchant?.name}}</span>
             <span class="result__products__icon iconfont">&#xe6a3;</span>
           </div>
         </div>
+      </div>
+      <div class="result__null"
+           v-if="productsList?.length === 0 && merchantList?.length == 0">
+        <h2 class="result__null__text">没有搜索到结果</h2>
       </div>
     </div>
   </div>
@@ -48,7 +53,7 @@
 import { ref, computed, reactive, toRefs, watchEffect } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-import { getSearchInfo } from '@/utils/search.js'
+import { getSearchList } from '@/utils/search.js'
 import Back from '@/components/Back.vue'
 import SearchBar from '@/components/SearchBar.vue'
 import ShopInfo from '@/components/ShopInfo.vue'
@@ -61,22 +66,40 @@ const SEARCH_CATEGOTIES = [
 ]
 
 // 获取 searchResultList 数据
-const useSearchResultEffect = (currentTab) => {
+const useSearchResultEffect = () => {
   const store = useStore()
   const msg = computed(() => store.state.searchHistory[0])
 
   const searchData = reactive({
-    searchResultList: {}
+    searchResultList: [],
+    merchantList: [],
+    productsList: []
   })
   const getSearchResult = async () => {
     try {
-      const result = await getSearchInfo({
-        s: msg.value,
-        type: currentTab.value
+      const result = await getSearchList({
+        s: msg.value
+        // type: currentTab.value
       })
       console.log(result)
       if (result) {
-        searchData.searchResultList = result
+        searchData.searchResultList = result.search_result
+        let products = []
+        result.search_result.forEach(item => {
+          if (item?.merchant) {
+            searchData.merchantList.push(item?.merchant)
+          }
+          if (item?.products?.length !== 0) {
+            console.log(item?.products)
+            item.products.forEach(product => {
+              product.merchant = item?.merchant
+            })
+            products = [...products, ...(item?.products)]
+            searchData.productsList = products
+          }
+        })
+        console.log('merchantList', searchData.merchantList)
+        console.log('productsList', searchData.productsList)
       }
     } catch (err) {
       console.log('请求失败')
@@ -84,8 +107,8 @@ const useSearchResultEffect = (currentTab) => {
   }
   watchEffect(() => getSearchResult())
   // getSearchResult()
-  const { searchResultList } = toRefs(searchData)
-  return { msg, searchResultList, getSearchResult }
+  const { merchantList, productsList } = toRefs(searchData)
+  return { msg, merchantList, productsList, getSearchResult }
 }
 
 // 处理切换 Tab
@@ -117,10 +140,14 @@ export default {
   name: 'SearchResult',
   components: { Back, SearchBar, ShopInfo },
   setup () {
+    const router = useRouter()
+    const handleToMerchant = (shopId) => {
+      router.push({ path: `/merchants/${shopId}` })
+    }
     const { searchKey, handleSearchEnter } = useSearchEffect()
     const { currentTab, handleSelectTab } = useTabEffect()
-    const { msg, searchResultList } = useSearchResultEffect(currentTab)
-    return { SEARCH_CATEGOTIES, searchKey, handleSearchEnter, currentTab, handleSelectTab, msg, searchResultList }
+    const { msg, merchantList, productsList } = useSearchResultEffect()
+    return { SEARCH_CATEGOTIES, searchKey, handleSearchEnter, currentTab, handleSelectTab, msg, merchantList, productsList, handleToMerchant }
   }
 }
 </script>
@@ -188,6 +215,33 @@ export default {
     &__sales {
       font-size: 0.12rem;
       color: $light-fontColor;
+    }
+    &__merchant {
+      margin: 0.06rem 0;
+    }
+    &__shop {
+      font-size: 0.14rem;
+    }
+    &__icon {
+      position: relative;
+      top: 0.01rem;
+    }
+  }
+  &__null {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0.44rem;
+    bottom: 0;
+    /* background: $page-bgColor; */
+    &__text {
+      position: relative;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: normal;
+      text-align: center;
+      color: $content-fontcolor;
     }
   }
 }
