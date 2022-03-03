@@ -1,6 +1,6 @@
 <template>
   <div class="banner">
-    <img src="http://www.dell-lee.com/imgs/vue3/banner.jpg"
+    <img src="@/assets/banner.jpeg"
          alt="banner"
          class="banner__img">
   </div>
@@ -8,7 +8,7 @@
     <div class="icons__item"
          v-for="item in iconsList"
          :key="item.desc">
-      <img :src="`http://www.dell-lee.com/imgs/vue3/${item.imgName}.png`"
+      <img :src="`https://gymall.guying18.com/media/${item.imgName}.png`"
            class="icons__item__img">
       <p class="icons__item__desc">{{item.desc}}</p>
     </div>

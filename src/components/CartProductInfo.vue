@@ -16,7 +16,7 @@
       <div class="shop__item__checked iconfont"
            @click="() => changeCartItemChecked(shopId, item.id)"
            v-html="item.check ? '&#xe656;' : '&#xe7ae;'"></div>
-      <img :src="item?.img?.img || item?.product_img?.img"
+      <img :src="item?.img?.img"
            class="shop__item__img">
       <div class="shop__item__details">
         <h4 class="shop__item__title">{{item.name}}</h4>

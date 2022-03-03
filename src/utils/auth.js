@@ -10,11 +10,6 @@ export const register = (userInfo) => {
   return axios.post('/api/v1/users/', userInfo).then(response => response.data)
 }
 
-// 登陆后获取用户信息
-export const getUserInfo = (userInfo) => {
-  return axios.post('/api/v1/users/', userInfo).then(response => response.data)
-}
-
 // 定义 token 有效期
 const LOGIN_VALID_SPAN = 7 * 24 * 3600 * 1000
 

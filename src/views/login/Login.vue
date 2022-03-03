@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <img src="http://www.dell-lee.com/imgs/vue3/user.png"
+    <img src="@/assets/user.png"
          class="wrapper__img" />
     <div class="wrapper__input">
       <label class="wrapper__input__label">
