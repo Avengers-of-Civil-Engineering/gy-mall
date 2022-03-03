@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <div class="top">
-      <div class="top__edit iconfont">&#xe631;</div>
+      <!-- <div class="top__edit iconfont">&#xe631;</div> -->
     </div>
     <div class="user">
       <div class="user__head">
@@ -18,6 +18,7 @@
              v-if="userInfo?.avatar"
              class="user__head__img"
              @click="callFile">
+        <div class="top__edit iconfont">&#xe602;</div>
       </div>
       <div class="user__info">
         <h1 class="user__info__name">{{userInfo?.first_name}}</h1>
@@ -51,6 +52,8 @@
         <div class="card__item__go iconfont">&#xe6a3;</div>
       </div>
     </div>
+    <div class="logout"
+         @click="handleLogout">登出</div>
   </div>
   <Docker :currentIndex="3" />
 </template>
@@ -144,7 +147,11 @@ export default {
     const handleGoClick = () => {
       router.push({ name: 'AddressManage' })
     }
-    return { userInfo, TAB_LIST, handleGoClick, callFile, changePicture }
+    const handleLogout = () => {
+      localStorage.removeItem('authInfo')
+      router.push({ name: 'Login' })
+    }
+    return { userInfo, TAB_LIST, handleGoClick, callFile, changePicture, handleLogout }
   }
 }
 </script>
@@ -175,10 +182,10 @@ export default {
     linear-gradient(239deg, #3a6ff3 0%, #50c7fb 100%);
   &__edit {
     position: absolute;
-    top: 0.37rem;
-    right: 0.21rem;
+    top: 0.2rem;
+    right: 1.2rem;
     font-size: 0.2rem;
-    color: $bg-color;
+    color: $light-fontColor;
   }
 }
 .user {
@@ -287,5 +294,20 @@ export default {
       color: #c2c4ca;
     }
   }
+}
+.logout {
+  position: relative;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1rem;
+  margin: 0.16rem 0;
+  padding: 0.05rem;
+  box-sizing: border-box;
+  font-size: 0.14rem;
+  text-align: center;
+  color: $bg-color;
+  background: $btn-bgcolor;
+  border-radius: 0.15rem;
 }
 </style>

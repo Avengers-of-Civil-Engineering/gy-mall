@@ -3,22 +3,17 @@
     <img src="@/assets/user.png"
          class="wrapper__img" />
     <div class="wrapper__input">
-      <label class="wrapper__input__label">
-        用户名:
-        <input type="text"
-               v-model="username"
-               class="wrapper__input__content"
-               placeholder="请输入用户名">
-      </label>
+      <input type="text"
+             v-model="username"
+             class="wrapper__input__content"
+             placeholder="请输入用户名">
     </div>
     <div class="wrapper__input">
-      <label class="wrapper__input__label">
-        密码:
-        <input type="text"
-               v-model="password"
-               class="wrapper__input__content"
-               placeholder="请输入密码">
-      </label>
+      <input type="password"
+             v-model="password"
+             class="wrapper__input__content"
+             placeholder="请输入密码">
+
     </div>
     <div class="wrapper__login-btn"
          @click="handleLogin">登陆</div>
@@ -144,11 +139,6 @@ export default {
     background: #f9f9f9;
     border: 0.01rem solid rgba(0, 0, 0, 0.1);
     border-radius: 6px;
-    &__label {
-      margin-top: 0.12rem;
-      line-height: 0.24rem;
-      font-size: 0.16rem;
-    }
     &__content {
       @include formatInput;
       margin-top: 0.12rem;

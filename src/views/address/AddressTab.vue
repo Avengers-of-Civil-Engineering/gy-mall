@@ -4,9 +4,9 @@
        :key="item.id">
     <div class="receiver__position iconfont"
          v-if="isSingle === 'true'">&#xe65e;</div>
-    <div class="receiver__content">
-      <div class="receiver__info"
-           @click="() => handleSelect(item.id)">
+    <div class="receiver__content"
+         @click="() => handleSelect(item.id)">
+      <div class="receiver__info">
         <span class="receiver__info__name">{{item.name}}</span>
         <span class="receiver__info__phone">{{item.phone_number}}</span>
       </div>

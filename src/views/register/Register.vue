@@ -5,14 +5,11 @@
     <div class="wrapper__input"
          v-for="item in registerData"
          :key="item.id">
-      <label class="wrapper__input__label">
-        {{item.label}}
-        <input type="text"
-               v-model="item.value"
-               class="wrapper__input__content"
-               :placeholder="item.placeholder"
-               required>
-      </label>
+      <input :type="item.type"
+             v-model="item.value"
+             class="wrapper__input__content"
+             :placeholder="item.placeholder"
+             required>
     </div>
     <div class="wrapper__register-btn"
          @click="handleRegister">注册</div>
@@ -33,12 +30,12 @@ import Toast, { useToastEffect } from '@/components/Toast.vue'
 const useRegisterEffect = (showToast) => {
   const router = useRouter()
   const registerData = reactive([
-    { id: 1, label: '用户名:', placeholder: '请输入用户名', value: '' },
-    { id: 2, label: '邮箱:', placeholder: '请输入邮箱', value: '' },
-    { id: 3, label: '昵称:', placeholder: '请输入昵称', value: '' },
-    { id: 4, label: '手机号:', placeholder: '请输入手机号', value: '' },
-    { id: 5, label: '密码:', placeholder: '请输入密码', value: '' },
-    { id: 6, label: '确认密码:', placeholder: '请确认密码', value: '' }
+    { id: 1, label: '用户名:', placeholder: '请输入用户名', value: '', type: 'text' },
+    { id: 2, label: '邮箱:', placeholder: '请输入邮箱', value: '', type: 'text' },
+    { id: 3, label: '昵称:', placeholder: '请输入昵称', value: '', type: 'text' },
+    { id: 4, label: '手机号:', placeholder: '请输入手机号', value: '', type: 'text' },
+    { id: 5, label: '密码:', placeholder: '请输入密码', value: '', type: 'password' },
+    { id: 6, label: '确认密码:', placeholder: '请确认密码', value: '', type: 'password' }
   ])
   const handleRegister = async () => {
     if (registerData[5].value === registerData[4].value) {
@@ -135,11 +132,6 @@ export default {
     background: #f9f9f9;
     border: 0.01rem solid rgba(0, 0, 0, 0.1);
     border-radius: 6px;
-    &__label {
-      margin-top: 0.12rem;
-      line-height: 0.24rem;
-      font-size: 0.16rem;
-    }
     &__content {
       width: 70%;
       @include formatInput;
