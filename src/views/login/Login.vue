@@ -143,7 +143,7 @@ export default {
       @include formatInput;
       margin-top: 0.12rem;
       line-height: 0.24rem;
-      width: 70%;
+      width: 100%;
       font-size: 0.16rem;
     }
   }

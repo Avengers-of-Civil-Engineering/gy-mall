@@ -133,8 +133,8 @@ export default {
     border: 0.01rem solid rgba(0, 0, 0, 0.1);
     border-radius: 6px;
     &__content {
-      width: 70%;
       @include formatInput;
+      width: 100%;
       margin-top: 0.12rem;
       line-height: 0.24rem;
       font-size: 0.16rem;
