@@ -16,7 +16,7 @@
 
     </div>
     <div class="wrapper__login-btn"
-         @click="handleLogin">登陆</div>
+         @click="handleLogin">登录</div>
     <div class="wrapper__register-link"
          @click="handleToRegister">没有账号，立即注册</div>
   </div>
